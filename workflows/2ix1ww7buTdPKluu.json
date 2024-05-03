@@ -1,6 +1,6 @@
 {
   "createdAt": "2024-01-26T08:19:21.067Z",
-  "updatedAt": "2024-05-03T06:11:23.407Z",
+  "updatedAt": "2024-05-03T09:09:27.260Z",
   "id": "2ix1ww7buTdPKluu",
   "name": "🌎 PUBLISH RSS --> TG @CyberSec911 - UA",
   "active": true,
@@ -830,13 +830,13 @@
       "lastTimeChecked": "2024-05-03T06:11:23Z"
     },
     "node:RSS Feed Trigger5": {
-      "lastTimeChecked": "2024-05-02T07:03:59Z"
+      "lastTimeChecked": "2024-05-03T07:03:59Z"
     },
     "node:RSS Feed Trigger6": {
-      "lastTimeChecked": "2024-05-02T08:27:13Z"
+      "lastTimeChecked": "2024-05-03T08:27:13Z"
     },
     "node:RSS Feed Trigger7": {
-      "lastTimeChecked": "2024-05-02T09:09:27Z"
+      "lastTimeChecked": "2024-05-03T09:09:27Z"
     },
     "node:RSS Feed Trigger8": {
       "lastTimeChecked": "2024-05-02T10:11:34Z"

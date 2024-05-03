@@ -1,6 +1,6 @@
 {
   "createdAt": "2024-05-02T07:12:35.407Z",
-  "updatedAt": "2024-05-03T08:03:11.501Z",
+  "updatedAt": "2024-05-03T09:58:26.916Z",
   "id": "2NQf6cmO9b1eWDX6",
   "name": "Git backup of workflows and credentials",
   "active": false,
@@ -71,7 +71,7 @@
     },
     {
       "parameters": {
-        "command": "git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
+        "command": "git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
       },
       "name": "git push",
       "type": "n8n-nodes-base.executeCommand",
@@ -128,7 +128,7 @@
     },
     {
       "parameters": {
-        "command": "git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
+        "command": "git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
       },
       "name": "git push1",
       "type": "n8n-nodes-base.executeCommand",
@@ -214,7 +214,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "07fa6e69-03e3-49ab-911b-bfbc92ff2286",
+  "versionId": "bb5c9534-dfba-4e7d-9ce7-2821d17785b9",
   "triggerCount": 0,
   "tags": []
 }
