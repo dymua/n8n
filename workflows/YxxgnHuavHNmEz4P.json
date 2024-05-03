@@ -1,0 +1,89 @@
+{
+  "createdAt": "2023-12-17T13:07:41.630Z",
+  "updatedAt": "2023-12-17T13:07:41.630Z",
+  "id": "YxxgnHuavHNmEz4P",
+  "name": "Download a file from Google Drive",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "7d2d6754-bd16-442e-b793-88c35f9e5705"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "limit": 10,
+        "options": {}
+      },
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        580,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "6bfd1489-89e7-4259-827e-67f4c3a0835d",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "R7cOYneSkwMHPv7f",
+          "name": "Google Drive affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileName": "/data/downloaded_file.pdf",
+        "options": {}
+      },
+      "name": "Write Binary File",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "position": [
+        780,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "f1e294e3-ff8b-4109-bf65-4b7b0b8d8bbb"
+    }
+  ],
+  "connections": {
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Write Binary File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "dbd6ec3c-3337-4a5e-9956-fb7c7a7c59fd",
+  "triggerCount": 0,
+  "tags": []
+}

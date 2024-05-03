@@ -1,0 +1,1342 @@
+{
+  "createdAt": "2024-04-08T15:56:33.396Z",
+  "updatedAt": "2024-04-23T09:33:48.777Z",
+  "id": "BjvIgCjEkPPQ6e8g",
+  "name": "🤖 @PSY_aibot Персональний психолог. Онлайн прийом.",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "notStartsWith",
+              "value2": "/",
+              "output": 3
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/start",
+              "output": 1
+            },
+            {
+              "operation": "startsWith",
+              "value2": "=/pay",
+              "output": 2
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/"
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "6618a717-514a-4d51-9917-ea5c8bd7ea89",
+      "name": "CheckCommand",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -240,
+        200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$('Telegram').item.json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "startsWith",
+              "value2": "/info"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/new",
+              "output": 3
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/about",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "b79ad726-8d5a-4ac9-9c07-cfdca06b64a5",
+      "name": "CheckCommand1",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        40,
+        -240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/user",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "COMMAND",
+              "value": "INSERT"
+            },
+            {
+              "name": "SET",
+              "value": "=id='{{$('Telegram').item.json.message.from.id}}', name='{{$('Telegram').item.json.message.from.username}}', status='1', lng='uk', created=now(),balance=0, request=50, subscription='EMPAI-FREE',subscription_start=now(), tgtoken='PSY_aibot',refferal='{{ $('Telegram').item.json.message.text.includes('ref--') ? $('Telegram').item.json.message.text.split('ref--')[1] || '' : '';}}'\n\n\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b34e315c-9968-421d-ba54-77872866482a",
+      "name": "new_user",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        260
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "id": "f302b235-cdd6-4ea8-a1cf-1dec94fb66a2",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -100
+      ],
+      "webhookId": "4ea24017-32ec-4f08-9d38-4e4ba7ac2d02",
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "= \nДоступно : <b>{{ $('user').item.json.request }}</b> запитів. \n\nДля поповнення балансу запитів оберіть команду /pay\n\n\n\n\n  ",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "3ddb2db0-1cae-400e-b384-1c0b52674f0e",
+      "name": "msg_INFO",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        -420
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "file": "https://empai.store/res/empai-health-mental/PSY_Logo_1080x1080.jpg",
+        "additionalFields": {
+          "caption": "=Вітаю <b>{{ $('Telegram').item.json.message.chat.first_name }} </b>, я твій персональний психолог. \n\nГотовий надати допомогу та консультацію. \n\nНадам пропозиції щодо вирішення твоїх ситуацій та питань, я використовую відомі наукові підходи, даю підказки по ситуаціям. \n\n1️⃣ для початку нового сеансу натисни /new \n2️⃣ розкажи деталі про себе та став свої питання ✏️текстовим або 🎤голосовим повідомленням.\n\n<code>Мої знання базуються на загальному досвіді, тому інколи необхідні уточнення.</code>\n\n\n\n\n",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "f21b6b68-cd99-425d-b50f-4cbc49e21c16",
+      "name": "msg_START",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        160
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/users",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "COMMAND",
+              "value": "SELECT"
+            },
+            {
+              "name": "SELECT",
+              "value": "*"
+            },
+            {
+              "name": "WHERE",
+              "value": "=id ='{{ $('Telegram').item.json.message.from.id  }}'\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5cc2de74-0311-4964-be15-d293b266a9de",
+      "name": "user",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -120,
+        -240
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=<b>Поповнення балансу.</b>\n\nКількість запитів: <b>30</b>. \nДіє після підключення. \nПеріод дії: <b>безстроково</b>.\n\nВартість: <b>90</> UAH\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Сплатити 90 UAH",
+                    "additionalFields": {
+                      "callback_data": "btn_pay",
+                      "url": "={{ $json.response.checkout_url }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "83887643-9a50-47a5-99c5-b96d62348050",
+      "name": "msg_PAY",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=CALLBACK:\n{{ JSON.stringify($json)}}",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "419e5c3f-3110-417d-b757-ec2cc36a2aec",
+      "name": "Telegram Msg",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        180
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/users",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "COMMAND",
+              "value": "SELECT"
+            },
+            {
+              "name": "SELECT",
+              "value": "uuid"
+            },
+            {
+              "name": "WHERE",
+              "value": "=id ='{{ $('Telegram').item.json.message.from.id }}'"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2cf63d2b-464d-407f-b14b-adaf95119594",
+      "name": "user_unid",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -220,
+        760
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=💬",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "6f56f17e-35e7-430a-a06d-950746063b98",
+      "name": "msg_WAIT",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        760
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/ai/openai/chat_completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"user\": {\n        \"id\": \"{{ $('user_unid').item.json.uuid }}\",\n        \"lng\": \"uk\"\n    },\n    \"empai\": {\n        \"employees_id\": \"empai-health-mental#empai\",\n        \"path\": \"empai\"\n    },\n    \"answers\": {{ JSON.stringify($json.answers) }},\n    \"text_for_reply\": {\n        \"type\": \"\",\n        \"message\": \"\",\n        \"path\": \"\"\n    },\n    \"prompt\": {\n        \"type\": \"text\",\n        \"message\": {{ JSON.stringify($('Telegram').item.json.message.text) }},\n        \"path\": \"\"\n    }\n}   \n\n",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "280bcfd6-6b8d-434c-8c34-8db30007afdf",
+      "name": "empai_chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        540,
+        900
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "messageId": "={{ $('msg_WAIT').item.json.result.message_id }}",
+        "replyMarkup": "inlineKeyboard",
+        "text": "={{ $json.body.processed_data.text }}\n \n",
+        "additionalFields": {
+          "disable_web_page_preview": true,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "6f9b4b0c-df14-445c-adf0-ee4715373d62",
+      "name": "msg_ANSWER",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        560
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=Новий сеанс розпочато.\nОпишіть свою ситуацію чи питання.\n\n\n\n\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "a46fc90f-5a38-485e-9f52-dd713e327ab1",
+      "name": "msg_QUESTION",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        340,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://api.empai.store:443/empai/chat",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"user\": {\"uuid\": \"{{ $('user').item.json.uuid }}\"},\n\"empai\": \"empai-ent-astrologer\",\n\"path\": \"empai\"\n}",
+        "options": {}
+      },
+      "id": "0687da6b-e198-499b-9db4-47d796ffa5d6",
+      "name": "delete chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        160,
+        0
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/payments/invoice",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={   \n\"ID\": \"EMPAI-USE\",               \n\"PRICES_CURRENCY\": \"UAH\",\n\"PRICES_AMOUNT\": \"90\",\n\"REQUEST_EMAPI\": \"30\",\n\"DESCR\": \"Поповнення балансу.Кількість запитів: 30 шт. Період дії: безстроково.Діє після підключення.\",\n\"PRICES_LABEL\": \"Період дії: безстроково. Діє разом з іншими тарифами.\",\n\"bot\": \"6955110080\",\n\"chat\": \"{{$('Telegram').item.json.message.chat.id }}\"\n}\n\n",
+        "options": {}
+      },
+      "id": "305b4276-0b59-4b49-bc42-955aa0e8c385",
+      "name": "invoice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        60,
+        400
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/chat_post_answers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"user\": {\"uuid\": \"{{ $('user').item.json.uuid }}\"},\n\"employees_id\": \"empai-ent-astrologer#empai\",\n\"answers\": [{\"type\":\"text\",\"answer\":\"{{$('Telegram').item.json.message.text.split(\"/about\")[1]?.trim()}}\",\"path\":\"\"}]\n}",
+        "options": {}
+      },
+      "id": "4e886e25-02d2-473b-b29e-9563121a8750",
+      "name": "about",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        560,
+        -140
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=Зрозумів та записав.\nНапиши деталізований запит або питання та надішли.\n\n\n\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "d92401d6-603a-4935-8ddf-abf69ebf6c16",
+      "name": "msg_about",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        780,
+        -180
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/users",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "COMMAND",
+              "value": "SELECT"
+            },
+            {
+              "name": "WHERE",
+              "value": "=id='{{$('Telegram').item.json.message.from.id}}'\n\n"
+            },
+            {
+              "name": "SELECT",
+              "value": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad90dd16-636c-4446-8173-15252ac70dde",
+      "name": "user_exist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        20,
+        180
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$('user_exist').item.json.id}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "fc57d3e9-a555-4555-b0ef-9cb558d77628",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        240,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/chat_get_answers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"user\": {\"uuid\": \"{{ $('user_unid').item.json.uuid }}\"},\n    \"empai\": \"empai-health-mental\",\n    \"path\": \"empai\"\n}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "0fb1f9af-2e5d-4fa9-9a5d-e1eac217537d",
+      "name": "empai_chat_answer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        180,
+        760
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/payments/invoice",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={   \n\"ID\": \"EMPAI-USE\",               \n\"PRICES_CURRENCY\": \"UAH\",\n\"PRICES_AMOUNT\": \"90\",\n\"REQUEST_EMAPI\": \"30\",\n\"DESCR\": \"Поповнення балансу.Кількість запитів: 30 шт. Період дії: безстроково.Діє після підключення.\",\n\"PRICES_LABEL\": \"Період дії: безстроково. Діє разом з іншими тарифами.\",\n\"bot\": \"7004378384\",\n\"chat\": \"{{$('Telegram').item.json.message.chat.id }}\",\n\"MERCHANT_ID\": \"1541543\",\n\"MERCHANT_PASS\": \"kLWIXlUZuyZIMJivlIz64pT5JXTxjARh\"\n}\n\n",
+        "options": {}
+      },
+      "id": "8dcbd783-cb5e-4e3b-88cd-a9a1315adfd9",
+      "name": "invoice_DEMO",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        520,
+        540
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=Привіт <b>{{ $('Telegram').item.json.message.chat.first_name }} </b>, я твій персональний астролог. \n\nМаю в 🔮 всі знаки зодіаку та планети. Питай, що цікавить - розкажу, як зірки впливають на тебе. \n\nГотовий допомогти в розшифровці гороскопів та дати пораду. Сміливо питай – разом виявимо, що чекає на тебе за горизонтом! \n\n1️⃣ для початку нового сеансу натисни /new \n2️⃣ розкажи деталі про себе\n3️⃣ ставь свої питання\n\n\nℹ️ знадобиться допомога абоо підказка натискай меню ↙️\n\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "1796d7be-e913-4058-a051-749ac218038a",
+      "name": "msg_START1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "messageId": "={{ $('msg_WAIT').item.json.result.message_id }}",
+        "text": "=Не достатньо коштів для здійснення запиту.\n\nПоповніть запити через команду /pay\n\n \n",
+        "additionalFields": {
+          "disable_web_page_preview": true,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "7a4f804b-0faa-4a09-b044-68d09914b3f6",
+      "name": "msg_NOREQUEST_PAY",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        740
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/chat_get_answers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"user\": {\"uuid\": \"{{ $('user').item.json.uuid }}\"},\n    \"empai\": \"empai-ent-astrologer\",\n    \"path\": \"empai\"\n}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "a73f6046-07fa-40d9-9867-ce2561acf3bd",
+      "name": "empai_chat_answer_info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        380,
+        -380
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "messageId": "={{ $('msg_WAIT').item.json.result.message_id }}",
+        "text": "=От халепа!\n\n🛑 Виникла помилка. Ми вже працюємо над виправлення.\n\n\n🕒 Повтори свій запит за декілька хвилин.\n\n \n",
+        "additionalFields": {
+          "disable_web_page_preview": true,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "01396d40-12b0-4447-baa6-7db202c162cd",
+      "name": "msg_ERROR",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        920
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "value1": "={{ $json.statusCode }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "smallerEqual",
+              "value2": 200,
+              "outputKey": "0"
+            },
+            {
+              "operation": "equal",
+              "value2": 402,
+              "outputKey": "2"
+            },
+            {
+              "operation": "largerEqual",
+              "value2": 403,
+              "outputKey": "1"
+            }
+          ]
+        }
+      },
+      "id": "84d8c4d8-f2ba-4aee-9ac6-c38b8ceb1a9c",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [
+        740,
+        780
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# MAIN",
+        "height": 527.335140018066,
+        "width": 1715.9891598915983,
+        "color": 4
+      },
+      "id": "6b828158-af50-4e90-83b5-25cd76d136c1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Telegram').item.json.message.voice }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "9d34c2de-5e87-4b3a-ad67-d670f5084c32",
+      "name": "IF_VOICE",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram').item.json.message.voice.file_id }}"
+      },
+      "id": "12da98c6-c4f8-4a44-88b8-b34578ffca2b",
+      "name": "TG_VOICE",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -940,
+        460
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TAHXBN8J5laenBvL",
+          "name": "TG API @PSY_aibot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/file/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "87da67c7-11a5-4c05-a8b7-528673d10672",
+      "name": "save_ogg",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -720,
+        940
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Telegram').item.json.message.voice }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "47fc5f78-ec05-4021-aeab-0e8a84586cc4",
+      "name": "IF_VOICE1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        340,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/ai/openai/chat_completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"user\": {\n        \"id\": \"{{ $('user_unid').item.json.uuid }}\",\n        \"lng\": \"uk\"\n    },\n    \"empai\": {\n        \"employees_id\": \"empai-health-mental#empai\",\n        \"path\": \"empai\"\n    },\n    \"answers\": {{ JSON.stringify($json.answers) }},\n    \"text_for_reply\": {\n        \"type\": \"\",\n        \"message\": \"\",\n        \"path\": \"\"\n    },\n  \"prompt\": {\n    \"type\": \"voice\",\n    \"message\": \"\",\n    \"path\": \"{{ $('save_ogg').item.json.file_path }}\"\n  }\n\n}   \n\n ",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "58c225cf-cfe9-4b20-8cc3-0170649861e6",
+      "name": "empai_chat_voice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        540,
+        720
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "CheckCommand": {
+      "main": [
+        [
+          {
+            "node": "user",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "user_exist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "invoice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "user_unid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckCommand1": {
+      "main": [
+        [
+          {
+            "node": "empai_chat_answer_info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "about",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "delete chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "new_user": {
+      "main": [
+        [
+          {
+            "node": "msg_START",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "IF_VOICE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "user": {
+      "main": [
+        [
+          {
+            "node": "CheckCommand1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "user_unid": {
+      "main": [
+        [
+          {
+            "node": "msg_WAIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "msg_WAIT": {
+      "main": [
+        [
+          {
+            "node": "empai_chat_answer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empai_chat": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete chat": {
+      "main": [
+        [
+          {
+            "node": "msg_QUESTION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "about": {
+      "main": [
+        [
+          {
+            "node": "msg_about",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "user_exist": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "msg_START",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "new_user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empai_chat_answer": {
+      "main": [
+        [
+          {
+            "node": "IF_VOICE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empai_chat_answer_info": {
+      "main": [
+        [
+          {
+            "node": "msg_INFO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "msg_ANSWER",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_NOREQUEST_PAY",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_ERROR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "invoice": {
+      "main": [
+        [
+          {
+            "node": "msg_PAY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_VOICE": {
+      "main": [
+        [
+          {
+            "node": "TG_VOICE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CheckCommand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TG_VOICE": {
+      "main": [
+        [
+          {
+            "node": "save_ogg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_ogg": {
+      "main": [
+        [
+          {
+            "node": "user_unid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_VOICE1": {
+      "main": [
+        [
+          {
+            "node": "empai_chat_voice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "empai_chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empai_chat_voice": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "empai_chat_answer": [
+      {
+        "json": {
+          "answers": [
+            {
+              "path": "",
+              "type": "text",
+              "answer": "Дата народження: 20 Лютого 2009, Час народження: 09:30, Стать: жіноча."
+            }
+          ]
+        }
+      }
+    ],
+    "save_ogg": [
+      {
+        "json": {
+          "file_path": "/var/tmp/empai/files/file_5.oga"
+        }
+      }
+    ]
+  },
+  "versionId": "12d14383-37a2-40d9-9f65-d641ae641050",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2024-03-05T09:44:55.896Z",
+      "updatedAt": "2024-03-05T09:44:55.896Z",
+      "id": "D6VBXR2tXZXijk57",
+      "name": "empAI"
+    },
+    {
+      "createdAt": "2024-04-23T09:31:55.297Z",
+      "updatedAt": "2024-04-23T09:31:55.297Z",
+      "id": "2VwM5KVeMokRz9gS",
+      "name": "bot"
+    }
+  ]
+}

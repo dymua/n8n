@@ -1,0 +1,39 @@
+{
+  "createdAt": "2023-12-15T11:06:11.141Z",
+  "updatedAt": "2023-12-17T16:26:16.948Z",
+  "id": "9kWS5aPQXtbmrTYc",
+  "name": "My workflow",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "feedUrl": "https://easy-cooking.com.ua/feed/"
+      },
+      "id": "1698e1fa-b2c8-4ffe-b4cd-9a032002ec70",
+      "name": "RSS Feed Trigger",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        540
+      ]
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "90d9f09d-4e65-4ffc-86aa-1846210b0b24",
+  "triggerCount": 0,
+  "tags": []
+}

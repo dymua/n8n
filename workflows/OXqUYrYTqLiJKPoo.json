@@ -1,0 +1,43 @@
+{
+  "createdAt": "2023-12-29T12:12:03.358Z",
+  "updatedAt": "2023-12-29T12:12:03.358Z",
+  "id": "OXqUYrYTqLiJKPoo",
+  "name": "My workflow 2",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "TEST",
+        "formDescription": "Desc",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "name",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dde877fa-cb40-48f9-a56a-43fdb06984e4",
+      "name": "n8n Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        520
+      ],
+      "webhookId": "31bc5115-9443-4bd9-b113-2c0b6a3a8f9b"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "03791790-2418-4d8a-8028-07e16468de5b",
+  "triggerCount": 0,
+  "tags": []
+}

@@ -1,0 +1,694 @@
+{
+  "createdAt": "2023-12-26T09:09:13.185Z",
+  "updatedAt": "2024-04-23T09:37:57.102Z",
+  "id": "s8isGYdXT0Q2Z8Ph",
+  "name": "txtHiveRepostBot",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "id": "60580b27-a3be-4ddb-ba50-32d96fa26133",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        500,
+        520
+      ],
+      "webhookId": "feebbe78-973c-419f-9b43-6ee91411c900",
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "projectId": "n8n-empai-store",
+        "collection": "telegram-users",
+        "updateKey": "id",
+        "columns": "=id, is_bot,first_name,last_name,username,language_code,date,bot"
+      },
+      "name": "Google Cloud Firestore3",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "position": [
+        1420,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "d0a73dfb-dcc3-4465-95c3-82b70b1ebe42",
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "pd9cDpGY0hkAFlkw",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "id",
+              "value": "={{ $json.message.from.id }}"
+            },
+            {
+              "name": "date",
+              "value": "={{ $json.message.date }}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "is_bot",
+              "value": "={{ $json.message.from.is_bot }}"
+            }
+          ],
+          "string": [
+            {
+              "name": "first_name",
+              "value": "={{ $json.message.from.first_name }}"
+            },
+            {
+              "name": "last_name",
+              "value": "={{ $json.message.from.last_name }}"
+            },
+            {
+              "name": "username",
+              "value": "={{ $json.message.from.username }}"
+            },
+            {
+              "name": "language_code",
+              "value": "={{ $json.message.from.language_code }}"
+            },
+            {
+              "name": "bot",
+              "value": "A2allBot"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "name": "User",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1000,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "e6fb59e8-fa06-4d12-aae1-f20f679d5230"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.message.from.id }}",
+              "operation": "equal",
+              "value2": 5604495296
+            }
+          ]
+        }
+      },
+      "id": "e9c53bb7-3c70-4128-8c95-93d572f88a5b",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        760,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.from.id }}",
+        "action": "={{ $json.bot_typing }}"
+      },
+      "id": "9867d38d-e56e-4133-b347-a2c62e35a7be",
+      "name": "Send Typing action",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1100,
+        660
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "9749feeb-8106-4686-a2b9-a224c6ed3c83",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1320,
+        520
+      ],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "startsWith",
+              "value2": "/"
+            },
+            {
+              "operation": "regex",
+              "value2": "/.+/",
+              "output": 1
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/test",
+              "output": 3
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "5c973f02-63be-4a50-b941-8cc354e62692",
+      "name": "CheckCommand",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        1480,
+        520
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "🛑 Access denied.🛑\n\nOnly for users of the https://txtHiveHub.com service ",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": false
+        }
+      },
+      "id": "0fe8e8ec-dceb-4e71-bf0d-54bd9f1faa3e",
+      "name": "Telegram-Not-Admins",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        740
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "message.text",
+              "value": "={{ $json?.message?.text || \"\" }}"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "id": "71138584-6d93-4577-9711-1c94b2a85eef",
+      "name": "message",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1060,
+        500
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "1.Усе Як Є - @useyake d: -1001752090126 \\n\n2.",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": false
+        }
+      },
+      "id": "f96ee98a-3d34-4b7e-8922-caa2cd0f652e",
+      "name": "/list",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2100,
+        620
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "startsWith",
+              "value2": "/start"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "=/help",
+              "output": 1
+            },
+            {
+              "operation": "startsWith",
+              "value2": "=/list",
+              "output": 2
+            },
+            {}
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "85d94d92-e220-4166-b3cc-e12baa421221",
+      "name": "Command",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        1660,
+        220
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "ERROR",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML",
+          "reply_to_message_id": 0
+        }
+      },
+      "id": "bf50baa2-a605-4aa0-a74c-79da30623328",
+      "name": "Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1780,
+        540
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "/list\n/publish\n/view",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "ed4bbae4-d154-40fd-b978-6550e89cd70c",
+      "name": "/help",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2100,
+        460
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Сервіс  обробки матеріалів для  https://txtHiveHub.com",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "9d2da408-76de-446b-b0ef-74379e407299",
+      "name": "/start",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2100,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "e47e4566-0988-42ec-af57-addbc3cf1d25",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "5604495296",
+        "text": "={{ $json.description }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "call back",
+                    "additionalFields": {
+                      "callback_data": "callback_"
+                    }
+                  },
+                  {
+                    "text": "SIQCC",
+                    "additionalFields": {
+                      "switch_inline_query_current_chat": ""
+                    }
+                  },
+                  {
+                    "text": "SIQ",
+                    "additionalFields": {
+                      "switch_inline_query": ""
+                    }
+                  },
+                  {
+                    "additionalFields": {}
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "f00cfbb9-f6cd-4b74-91f9-bf8f99dac02d",
+      "name": "Preview",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2100,
+        780
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "d5j2tXCwB8WFr5Ot",
+          "name": "Telegram bot txtHiveRepost"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n{json: {\n    id: -1001752090126,\n    title: 'Усе Як Є',\n    name: 'useyake',\n  }},\n{json: {\n    id:  -1002131588974,\n    title: 'Cyber Security | КіберБезпека',\n    name: 'CyberSec911',\n  }},\n{json: {\n    id:  -1001942235268,\n    title: 'ШІнтелект',\n    name: 'AIntellekt',\n  }}\n];"
+      },
+      "id": "e3662789-c0fa-4bea-af91-128207ee4013",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        840
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "=TITLE"
+            },
+            {
+              "name": "=description",
+              "value": "={{ $json.message.text }}"
+            },
+            {
+              "name": "footer",
+              "value": "footer"
+            },
+            {},
+            {
+              "name": "photo_id",
+              "value": "photo_id"
+            },
+            {
+              "name": "video_id",
+              "value": "video_id"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "id": "d5dfe09c-55d2-4d5d-ad9e-e10999afba72",
+      "name": "message_text",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1660,
+        780
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User": {
+      "main": [
+        [
+          {
+            "node": "Google Cloud Firestore3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram-Not-Admins",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "CheckCommand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckCommand": {
+      "main": [
+        [
+          {
+            "node": "Command",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "message_text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Command": {
+      "main": [
+        [
+          {
+            "node": "/start",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "/help",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "/list",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "message_text": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "When clicking \"Execute Workflow\"": [
+      {
+        "json": {
+          "update_id": 546801410,
+          "message": {
+            "message_id": 38,
+            "from": {
+              "id": 5604495296,
+              "is_bot": false,
+              "first_name": "Dmytro",
+              "last_name": "Hiven",
+              "username": "txtHiveHub",
+              "language_code": "uk"
+            },
+            "chat": {
+              "id": 5604495296,
+              "first_name": "Dmytro",
+              "last_name": "Hiven",
+              "username": "txtHiveHub",
+              "type": "private"
+            },
+            "date": 1703601634,
+            "forward_from_chat": {
+              "id": -1001752090126,
+              "title": "Усе Як Є",
+              "username": "useyake",
+              "type": "channel"
+            },
+            "forward_from_message_id": 53,
+            "forward_date": 1702628647,
+            "text": "ID"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "f7c51890-f780-484e-961d-4a83485339de",
+  "triggerCount": 1,
+  "tags": []
+}

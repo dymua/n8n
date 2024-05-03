@@ -1,0 +1,726 @@
+{
+  "createdAt": "2023-12-26T18:10:55.850Z",
+  "updatedAt": "2024-03-11T07:18:55.156Z",
+  "id": "cYJ2qSCuCdbR90yk",
+  "name": "PUBLISH - TG: @Affirmation_Everyday",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Telegram:Affirmation_Every\n[@ffirmation_Everyday](https://t.me/Affirmation_Everyday)",
+        "height": 616.0516357384103,
+        "width": 1556.4585492227982,
+        "color": 6
+      },
+      "id": "9ebab82b-5f60-4e0e-b123-c49227607177",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        280
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "794717d7-c2cf-4107-8e48-3722fca74992",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        40,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 7
+            }
+          ]
+        }
+      },
+      "id": "9c67b0dc-ed03-4c44-baff-aa61767f9333",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        40,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/dymua",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "smm",
+          "mode": "name"
+        },
+        "filePath": "Affirmation_Everyday/publish"
+      },
+      "id": "7d02f283-1c7b-4cc0-8d0c-ad78dbdb2f52",
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        280,
+        520
+      ],
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "limit"
+      },
+      "id": "d83b9706-cd57-4832-8984-8c3c7339d0ae",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        480,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1001997509701",
+        "file": "={{ $json.download_url }}",
+        "additionalFields": {
+          "caption": "=<a href=\"https://t.me/Affirmation_Everyday\">Афірмація Щодня</a> ",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "fc50ab8e-cd96-4a6b-8384-57a0b43e1a81",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        520
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "delete",
+        "owner": {
+          "__rl": true,
+          "value": "dymua",
+          "mode": "list",
+          "cachedResultName": "dymua",
+          "cachedResultUrl": "https://github.com/dymua"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "smm",
+          "mode": "list",
+          "cachedResultName": "smm",
+          "cachedResultUrl": "https://github.com/dymua/smm"
+        },
+        "filePath": "={{ $('Item Lists').item.json.path }}",
+        "commitMessage": "= DELETED:{{ $('Item Lists').item.json.path }} PUBLISHED https://t.me/{{ $json.result.chat.username }}/{{ $json.result.message_id }}",
+        "additionalParameters": {
+          "branch": {
+            "branch": "main"
+          }
+        }
+      },
+      "id": "8bda2621-109e-4179-aa73-7afbac579296",
+      "name": "GitHub Delete Posted",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        500
+      ],
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.ok }}",
+              "value2": "={{ true }}"
+            }
+          ]
+        }
+      },
+      "id": "7fe88ac7-866a-48f2-bb42-ab33df76149c",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        920,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1001997509701",
+        "file": "={{ $json.download_url }}",
+        "additionalFields": {
+          "caption": "#Афірмація_Щодня #ПозитивніАфірмації  <a href=\"https://t.me/Affirmation_Everyday\">Афірмація Щодня |  @Affirmation_Everyday</a>",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "2f11f08f-17c2-4536-99e4-b5197b081972",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        -220
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1001997509701",
+        "text": "Ніхто не може повернутися назад і почати новий початок, але кожен може почати сьогодні і зробити новий кінець. \n\n-Марія Робінсон \n\n#з добрим ранком",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "id": "d00dca5b-4997-46b7-8270-878ebc821a95",
+      "name": "Telegram2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -240
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1001997509701",
+        "text": "=#{{ $json.tag.replace(/ /g, '_') }}\n\n\n<code>\n{{ $json.text.replace(/(.*?) -/, '$1\\n\\n') }}\n</code>\n\n\n\n\n",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "841f92a9-1bd1-470a-8ef0-2eabaab6d169",
+      "name": "Telegram - PostMessage",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        1140
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1MDrTVkBetkoKcyLPIwZDnwFXPL00AxitsMAtAcLITng",
+          "mode": "list",
+          "cachedResultName": "@Affirmation_Everyday",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MDrTVkBetkoKcyLPIwZDnwFXPL00AxitsMAtAcLITng/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1223240932,
+          "mode": "list",
+          "cachedResultName": "quotes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MDrTVkBetkoKcyLPIwZDnwFXPL00AxitsMAtAcLITng/edit#gid=1223240932"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "published",
+            "post_link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}",
+            "TG post id": "={{ $json.result.message_id }}",
+            "TG time": "={{ $json.result.date }}",
+            "row_number": "={{ $('GoogleSheets').item.json.row_number }}",
+            "TG_Publish": "={{ $json.result.date }}",
+            "publish": "={{ $json.result.date }}",
+            "link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tag",
+              "displayName": "tag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "publish",
+              "displayName": "publish",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "efaa7a49-494b-4575-bbcf-95d7b552aa4f",
+      "name": "Google Sheets Message",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        1140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1MDrTVkBetkoKcyLPIwZDnwFXPL00AxitsMAtAcLITng",
+          "mode": "list",
+          "cachedResultName": "@Affirmation_Everyday",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MDrTVkBetkoKcyLPIwZDnwFXPL00AxitsMAtAcLITng/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1223240932,
+          "mode": "list",
+          "cachedResultName": "quotes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MDrTVkBetkoKcyLPIwZDnwFXPL00AxitsMAtAcLITng/edit#gid=1223240932"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "ready"
+            }
+          ]
+        },
+        "options": {
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "c0ae4046-3a8f-4a5a-ad91-980c24742532",
+      "name": "GoogleSheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        1140
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1001997509701",
+        "text": "=#tag_1\n\n<b>bold</b>, <strong> bold </strong>\n\n<i> italic </i>, <em> italic </em>\n\n<a href = 'http://www.example.com/'> inline URL </a>\n\n<a href = 'tg://user?id=123456789'> inline mention of a user</a>\n\n<code> inline fixed-width code </code>\n\n<pre> pre - formatted fixed-width code block</pre>",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "86dc6931-b871-4ad9-98f1-ef3b32bb80c0",
+      "name": "Telegram -Styles",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        920,
+        -40
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Telegram:Affirmation_Every - Quotes\n[@ffirmation_Everyday](https://t.me/Affirmation_Everyday)",
+        "height": 312,
+        "width": 1545.0305223314826,
+        "color": 6
+      },
+      "id": "4f4dabb8-0728-47f8-89d5-cf563c3affae",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 34
+            }
+          ]
+        }
+      },
+      "id": "99827fc9-4f19-4f3b-8c32-067effa5a99f",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        140,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 16,
+              "minute": 27
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        -60,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "92224622-722f-4cb2-af3f-bdcb72182541"
+    },
+    {
+      "parameters": {
+        "url": "https://affirmations.dev",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        200,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "0f705d6f-50b6-4e02-86e6-714de2ad6010"
+    },
+    {
+      "parameters": {
+        "chatId": "-1001997509701",
+        "text": "= \n  🔆 {{ $json.text }}",
+        "additionalFields": {}
+      },
+      "name": "Telegram3",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        700,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "9980927b-7bc4-4098-b263-7084ca7e6477",
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.affirmation }}",
+        "translateTo": "UK",
+        "additionalFields": {
+          "sourceLang": "EN-US",
+          "preserveFormatting": "0",
+          "formality": "default"
+        }
+      },
+      "id": "a1b2f29f-169c-4416-bec7-651c6eb024d9",
+      "name": "DeepL",
+      "type": "n8n-nodes-base.deepL",
+      "typeVersion": 1,
+      "position": [
+        460,
+        1480
+      ],
+      "credentials": {
+        "deepLApi": {
+          "id": "r9sxheuoE5jGNrZp",
+          "name": "DeepL affprn@gmail.com"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "GitHub Delete Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - PostMessage": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GoogleSheets": {
+      "main": [
+        [
+          {
+            "node": "Telegram - PostMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "DeepL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepL": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    },
+    "node:Schedule Trigger1": {
+      "recurrencyRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "67fc65d5-8883-48c8-86a2-d77112792899",
+  "triggerCount": 3,
+  "tags": []
+}

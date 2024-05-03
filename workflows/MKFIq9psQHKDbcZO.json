@@ -1,0 +1,321 @@
+{
+  "createdAt": "2023-12-27T11:03:04.822Z",
+  "updatedAt": "2023-12-27T16:09:52.475Z",
+  "id": "MKFIq9psQHKDbcZO",
+  "name": "PUBLISH YouTube channel videos to Telegram",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "id",
+              "value": "={{$node[\"GetVideosYT\"].json[\"id\"][\"videoId\"]}}"
+            },
+            {
+              "name": "url",
+              "value": "=https://youtu.be/{{$node[\"GetVideosYT\"].json[\"id\"][\"videoId\"]}}"
+            },
+            {
+              "name": "title",
+              "value": "={{$node[\"GetVideosYT\"].json[\"snippet\"][\"title\"]}}"
+            }
+          ],
+          "boolean": []
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        400,
+        220
+      ],
+      "typeVersion": 1,
+      "id": "720d50e2-bdf2-4718-bf45-92067fe8f54e"
+    },
+    {
+      "parameters": {
+        "functionCode": "const new_items = [];\nconst data = this.getWorkflowStaticData('node');\n\ndata.ids = data.ids || [];\n\nfor (var i=0; i<items.length; i++) {\n  if (data.ids.includes(items[i].json.id)) {\n    break;\n  } else {\n    new_items.push({json: {id: items[i].json.id, url: items[i].json.url, title: items[i].json.title}});\n  }\n}\n\ndata.ids = items.map(item => item.json.id)\nreturn new_items;\n"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        600,
+        220
+      ],
+      "typeVersion": 1,
+      "id": "d6694812-900f-4cf0-aece-be222fbbebfa"
+    },
+    {
+      "parameters": {
+        "interval": 30,
+        "unit": "minutes"
+      },
+      "name": "CheckTime",
+      "type": "n8n-nodes-base.interval",
+      "position": [
+        -260,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "727822a1-e057-45e8-96dd-fcd04d58f24e"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "limit": 10,
+        "filters": {
+          "channelId": "UCI78AdiI6f7VKhqW1i4B3Rw",
+          "q": " #shorts"
+        },
+        "options": {
+          "order": "date"
+        }
+      },
+      "name": "GetVideosYT",
+      "type": "n8n-nodes-base.youTube",
+      "position": [
+        -120,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "18f1ebf8-f378-4cb9-8d5e-e0eb0b90847a",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "GEHTo5WIptQMWb7Z",
+          "name": "YouTube affprn@gmail.com - USER"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": " -1001752090126",
+        "text": "=Nuovo video di almi su YouTube!\n<b>{{$node[\"Function\"].json[\"title\"]}}</b>\n\n{{$node[\"Function\"].json[\"url\"]}}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "name": "SendVideo",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        500,
+        20
+      ],
+      "typeVersion": 1,
+      "id": "8dbde991-a462-4b9a-9d81-937d49b8da84",
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.snippet.title }}",
+              "operation": "contains",
+              "value2": "#shorts"
+            }
+          ]
+        }
+      },
+      "id": "103b3f3f-e4bc-4372-85ad-37eba2c41829",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        100,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "2aaacda6-085c-4c07-9ad8-ce222cd590cf",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        820,
+        220
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "0bb5b75d-f41b-42dd-848a-b771b73cbfe1",
+      "name": "Replace Me",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        520,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1001752090126",
+        "text": "=Nuovo video di almi su YouTube!\n<b>{{$node[\"Function\"].json[\"title\"]}}</b>\n\n{{$node[\"Function\"].json[\"url\"]}}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "name": "SendVideo1",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1080,
+        380
+      ],
+      "typeVersion": 1,
+      "id": "11872418-ca02-4421-a18b-96f230b0056a",
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "seconds"
+      },
+      "id": "75d5ba12-5c89-4e91-bc20-9a1d790a4e1f",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        380
+      ],
+      "webhookId": "172d75c9-c8f4-4892-9b08-c55898761f38"
+    },
+    {
+      "parameters": {
+        "resource": "__CUSTOM_API_CALL__"
+      },
+      "name": "GetVideosYT1",
+      "type": "n8n-nodes-base.youTube",
+      "position": [
+        0,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "2764342a-3ac1-43c7-8a8c-27f67f16e335",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "GEHTo5WIptQMWb7Z",
+          "name": "YouTube affprn@gmail.com - USER"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckTime": {
+      "main": [
+        [
+          {
+            "node": "GetVideosYT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetVideosYT": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "SendVideo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendVideo1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "3415c105-0062-4d4c-828c-0c69838a897a",
+  "triggerCount": 0,
+  "tags": []
+}

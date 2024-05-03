@@ -1,0 +1,1048 @@
+{
+  "createdAt": "2024-03-14T11:18:12.619Z",
+  "updatedAt": "2024-04-24T07:52:40.015Z",
+  "id": "k09f1dw1stMJvxTf",
+  "name": "🖍️ PUB TG @VerbalEcho - GSheet",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 9
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 41
+            }
+          ]
+        }
+      },
+      "id": "2f615324-4ec9-4fa5-a453-514ca4872287",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        40,
+        -1200
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2d76477a-be8b-439f-8d02-150a69483305",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -1440
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac",
+          "mode": "list",
+          "cachedResultName": "TG Post VerbalEcho",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 110385418,
+          "mode": "list",
+          "cachedResultName": "post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac/edit#gid=110385418"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "ready"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "SERIAL_NUMBER"
+            }
+          },
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "e5a83a56-3f50-4e7e-84c3-77c2a9d5149e",
+      "name": "GoogleSheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        -1200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ ($('GoogleSheets').item.json.pubDT-25569)*86400}}",
+              "value2": "={{ $now.toMillis()/1000 }}"
+            }
+          ]
+        }
+      },
+      "id": "88327d6c-d535-4c74-8889-2b197bf641ed",
+      "name": "Filter_Date",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 1,
+      "position": [
+        460,
+        -1200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.pexels.com/v1/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f7c59961-e084-4146-a494-4df56b96f29e",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1000,
+        -840
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "AGa0SstLfevBHtn0",
+          "name": "api.pexels.com - Header Auth - affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=write a key phrase or word to search for photos on photo stocks in English for the text:{{ $json.description }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 16,
+          "temperature": 0.5
+        }
+      },
+      "id": "0275805e-fe55-4bbe-ad86-d34ee012b9f3",
+      "name": "OpenAI_keywords",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        540,
+        -820
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d7ETb2igT8O28Mxl",
+          "name": "OpenAi affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Виступи в ролі психолога. Напиши пост на тему: {{ $json[\"title\"] }}.\nСтиль написання:  інформативний. Вставляй конкретні корисні поради та рекомендації.  Розмір тексту до  120 слів або  меньше 900 символів. Використовуй емодзі та розмітку.\n\n\n"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 500,
+          "temperature": 0.5,
+          "topP": 1
+        }
+      },
+      "id": "7e7ba1df-e361-46b9-804e-6af702e86733",
+      "name": "OpenAI_article",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -560
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d7ETb2igT8O28Mxl",
+          "name": "OpenAi affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "description",
+              "stringValue": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "7697b8eb-2d48-42bf-abf0-aeed5674aad7",
+      "name": "Fields description",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        220,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('GoogleSheets').item.json.image }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "b8c0b34d-cd0e-4abb-aacc-240d0d9b57cd",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        740,
+        -820
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $('Filter_Date').item.json.title }}"
+            },
+            {
+              "name": "category",
+              "stringValue": "={{ $('Filter_Date').item.json.category }}"
+            },
+            {
+              "name": "description",
+              "stringValue": "={{ $('DESRIPTION').item.json.description }}"
+            },
+            {
+              "name": "image",
+              "stringValue": "={{ $json.photos[0].src.landscape }}"
+            },
+            {
+              "name": "channel",
+              "stringValue": "={{ $('Filter_Date').item.json['TG name'] }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "812e3b86-0f8e-4102-b77b-cfb473932530",
+      "name": "POST_IMG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1220,
+        -840
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('GoogleSheets').item.json.description }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "f739e741-d31d-45af-b6cf-d87c43303fd3",
+      "name": "IF description",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -800
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "description",
+              "stringValue": "={{ $json.description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8d18b73c-f8cb-4b4e-98b9-f41afa56a22f",
+      "name": "DESRIPTION",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        300,
+        -820
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('TG').item.json.ID }}",
+        "text": "={{ $json.title }} {{ $json.description }}  \n\n<a href=\"https://t.me/{{$('TG').item.json.NAME}}\" >#</a>\n \n",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "06b7abfe-0d2c-4697-a4d3-e4f00a00d647",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        860,
+        -1200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $('Filter_Date').item.json.title }}"
+            },
+            {
+              "name": "category",
+              "stringValue": "={{ $('Filter_Date').item.json.category }}"
+            },
+            {
+              "name": "description",
+              "stringValue": "={{ $('DESRIPTION').item.json.description }}"
+            },
+            {
+              "name": "image",
+              "stringValue": "={{ $('Filter_Date').item.json.image }}"
+            },
+            {
+              "name": "channel",
+              "stringValue": "={{ $('Filter_Date').item.json['TG name'] }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "9993a2f5-2436-475b-9c93-985cf3d17b4e",
+      "name": "POST",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        820,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "ID",
+              "type": "numberValue",
+              "numberValue": "-1001822678297"
+            },
+            {
+              "name": "TITLE",
+              "stringValue": "Словесний Лун"
+            },
+            {
+              "name": "NAME",
+              "stringValue": "VerbalEcho"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "a3a61eb9-6190-4f53-9c4a-9e8928b8a820",
+      "name": "TG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        140,
+        -1440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Channel - [Словесний Лун](https://t.me/VerbalEcho)\n**link** . [Словесний Лун](https://t.me/VerbalEcho)",
+        "height": 234.36056175011953,
+        "width": 762.5844004656575
+      },
+      "id": "65790870-392c-4634-bb6f-8569b75b2a9a",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -1520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac",
+          "mode": "list",
+          "cachedResultName": "TG Post VerbalEcho",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Filter_Date').item.json.row_number }}",
+            "status": "publish",
+            "TG  post link": "=https://t.me/{{ $json.result.chat.username }}/{{ $json.result.message_id }}",
+            "TG published": "={{ \nnew Date($json.result.date * 1000).toLocaleString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/(\\d{2}).(\\d{2}).(\\d{4})./, '$2.$1.$3');\n}}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDT",
+              "displayName": "pubDT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDate",
+              "displayName": "pubDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubTime",
+              "displayName": "pubTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TG published",
+              "displayName": "TG published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG  post link",
+              "displayName": "TG  post link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG post id",
+              "displayName": "TG post id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TG name",
+              "displayName": "TG name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TG id",
+              "displayName": "TG id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TG name",
+              "displayName": "TG name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3d457e49-487d-45b8-89e2-ab49dcbd76d0",
+      "name": "Google Sheets Log BACK",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        -1560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac",
+          "mode": "list",
+          "cachedResultName": "TG Post VerbalEcho",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 110385418,
+          "mode": "list",
+          "cachedResultName": "post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14cBZYM7za-CbBX487Bpot68WfP7HvUQxKcr4tLwA3ac/edit#gid=110385418"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Filter_Date').item.json.row_number }}",
+            "status": "publish",
+            "TG published": "={{ \nnew Date($json.result.date * 1000).toLocaleString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/(\\d{2}).(\\d{2}).(\\d{4})./, '$2.$1.$3');\n}}",
+            "TG  post link": "=https://t.me/{{ $json.result.chat.username }}/{{ $json.result.message_id }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LEN",
+              "displayName": "LEN",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDT",
+              "displayName": "pubDT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDate",
+              "displayName": "pubDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubTime",
+              "displayName": "pubTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TG published",
+              "displayName": "TG published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG  post link",
+              "displayName": "TG  post link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1e60e941-057b-4a88-9597-febe24d599e6",
+      "name": "Google Sheets Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        -1200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.floor(Math.random() * (41 - 3 + 1)) + 10 }}",
+        "unit": "minutes"
+      },
+      "id": "141f03de-e691-4882-810d-29e6322d5577",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -1200
+      ],
+      "webhookId": "6cb3771f-c879-4307-b4ef-5ae8f1fe1a4d"
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "TG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GoogleSheets": {
+      "main": [
+        [
+          {
+            "node": "Filter_Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "TG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Date": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_keywords": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_article": {
+      "main": [
+        [
+          {
+            "node": "Fields description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fields description": {
+      "main": [
+        [
+          {
+            "node": "DESRIPTION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "POST_IMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF description": {
+      "main": [
+        [
+          {
+            "node": "DESRIPTION",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI_article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DESRIPTION": {
+      "main": [
+        [
+          {
+            "node": "OpenAI_keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TG": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": [
+        18
+      ]
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "24aa0d7e-10f6-4693-8a81-c15a2afbbf63",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-18T15:44:54.483Z",
+      "updatedAt": "2023-12-18T15:44:54.483Z",
+      "id": "2Mg8DtZLVWubC3Zb",
+      "name": "GoogleSheet"
+    },
+    {
+      "createdAt": "2023-12-18T15:45:00.649Z",
+      "updatedAt": "2023-12-18T15:45:00.649Z",
+      "id": "6dbx1Oinpei6954y",
+      "name": "Publish"
+    },
+    {
+      "createdAt": "2024-04-23T09:55:42.444Z",
+      "updatedAt": "2024-04-23T09:55:42.444Z",
+      "id": "ZaFRfBefWd7Hsuuw",
+      "name": "@VerbalEcho"
+    }
+  ]
+}

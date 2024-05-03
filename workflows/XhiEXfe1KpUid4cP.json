@@ -1,0 +1,1145 @@
+{
+  "createdAt": "2024-03-08T11:08:15.992Z",
+  "updatedAt": "2024-04-25T17:50:47.583Z",
+  "id": "XhiEXfe1KpUid4cP",
+  "name": "🖌️ PUB TG remontmentalky - GSheet [AI]",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8-21/4 * * * "
+            }
+          ]
+        }
+      },
+      "id": "2a84816b-1514-4c9e-ad47-ff812074d1e7",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -1200
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "03a1cd19-52fb-44e8-9ff3-37e0bcc34ed6",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -1440
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow",
+          "mode": "list",
+          "cachedResultName": "TG Post @remontmentalky - Ремонт менталки",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "ready"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "SERIAL_NUMBER"
+            }
+          },
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "a42005a4-6702-4297-8b92-a66f8c3cc036",
+      "name": "GoogleSheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        -1200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ ($('GoogleSheets').item.json.pubDT-25569)*86400}}",
+              "value2": "={{ $now.toMillis()/1000 }}"
+            }
+          ]
+        }
+      },
+      "id": "4ceaf9a8-8110-40bb-8c91-25e6a1777307",
+      "name": "Filter_Date",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -1200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.pexels.com/v1/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1cc5e837-090c-4861-bdaa-50a6f3b25be0",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1840,
+        -1220
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "AGa0SstLfevBHtn0",
+          "name": "api.pexels.com - Header Auth - affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=write a key phrase or word to search for photos on photo stocks in English for the text:{{ $('DESRIPTION').item.json.description }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 16,
+          "temperature": 0.5
+        }
+      },
+      "id": "26963889-3dc9-4f75-8105-0adf38130810",
+      "name": "OpenAI_keywords",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        -1220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d7ETb2igT8O28Mxl",
+          "name": "OpenAi affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "prompt": {
+          "messages": [
+            {
+              "content": "=Виступи в ролі психолога. Напиши пост на тему: {{ $json[\"title\"] }}.\nСтиль написання:  інформативний. Вставляй конкретні корисні поради та рекомендації. Використовуй емодзі та розмітку,відступи між абзацами.Текст не більше 700 символів.\n\n\n"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1200,
+          "temperature": 0.5,
+          "topP": 1
+        }
+      },
+      "id": "b1e611d7-b5e1-4d0a-8a99-bf0e715249b8",
+      "name": "OpenAI_article",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        -880
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d7ETb2igT8O28Mxl",
+          "name": "OpenAi affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "description",
+              "stringValue": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "b2ffb040-36f4-4978-a09e-630ae9a77cb3",
+      "name": "Fields description",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1320,
+        -880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('GoogleSheets').item.json.description }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "df51767f-90c0-4c0d-9ac2-1f4ebdf53eb0",
+      "name": "IF description",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        -1200
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "description",
+              "stringValue": "={{ $json.description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f000e66a-33ba-4651-889d-05ecba461292",
+      "name": "DESRIPTION",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1400,
+        -1220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('TG').item.json.ID }}",
+        "file": "={{ $('IMG').item.json.image }}",
+        "additionalFields": {
+          "caption": "=<b>{{ $json.title }}</b> \n#{{$json.category }} \n\n{{ $json.description }} \n\n<a href=\"https://t.me/{{$('TG').item.json.NAME}}\" >{{ $('TG').item.json.TITLE }}</a>\n\n",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "ef26d099-33d6-4a50-949f-f7d63a4224b9",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2600,
+        -940
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "ID",
+              "type": "numberValue",
+              "numberValue": "-1002088592529"
+            },
+            {
+              "name": "TITLE",
+              "stringValue": "Ремонт Менталки 🔆"
+            },
+            {
+              "name": "NAME",
+              "stringValue": "remontmentalky"
+            },
+            {
+              "name": "filename",
+              "stringValue": "={{ $now.toISO().slice(0, -19)}}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "71f47f10-3934-4d79-bc26-9035bdd0f6c9",
+      "name": "TG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        260,
+        -1440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Channel - [Ремонт Менталки](https://t.me/remontmentalky)\n**link** . [Ремонт Менталки](https://t.me/remontmentalky)\n-1002088592529",
+        "height": 234.36056175011953,
+        "width": 762.5844004656575
+      },
+      "id": "82310bb1-808b-4f8f-915b-95cc5081a781",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -1520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow",
+          "mode": "list",
+          "cachedResultName": "TG Post @remontmentalky - Ремонт менталки",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ksHZk_QJX8inj8bcy5C7xeJRbY3JWaN45QQGKH3vZow/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Filter_Date').item.json.row_number }}",
+            "status": "publish",
+            "TG  post link": "=https://t.me/{{ $json.result.chat.username }}/{{ $json.result.message_id }}",
+            "TG published": "={{ \nnew Date($json.result.date * 1000).toLocaleString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/(\\d{2}).(\\d{2}).(\\d{4})./, '$1.$2.$3');\n}}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDT",
+              "displayName": "pubDT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDate",
+              "displayName": "pubDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubTime",
+              "displayName": "pubTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TG published",
+              "displayName": "TG published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG  post link",
+              "displayName": "TG  post link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG post id",
+              "displayName": "TG post id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG name",
+              "displayName": "TG name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG id",
+              "displayName": "TG id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG name",
+              "displayName": "TG name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2bde7b66-9bb3-4006-bb3d-9566cf3daa14",
+      "name": "Google Sheets Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2960,
+        -620
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "limit"
+      },
+      "id": "7353c3d8-ecdf-43be-a94e-25bcc82b80b1",
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        900,
+        -1200
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('TG').item.json.ID }}",
+        "text": "=<b>{{ $json.title }}</b>  \n#{{$json.category }}   \n\n{{ $json.description }}   \n\n<a href=\"https://t.me/{{$('TG').item.json.NAME}}\" >{{ $('TG').item.json.TITLE }}</a>",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "b4dad856-43e3-4f44-ba35-31d5f11436a2",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2720,
+        -480
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.floor(Math.random() * (41 - 9 + 1)) + 10 }}",
+        "unit": "minutes"
+      },
+      "id": "e3d7caf4-8912-40f4-bad1-b88cc3fe38c7",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -1200
+      ],
+      "webhookId": "6cb3771f-c879-4307-b4ef-5ae8f1fe1a4d"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "image",
+              "stringValue": "={{ $json.photos[0].src.landscape }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "ac4cb019-9aba-4e9a-ae79-c8212496215f",
+      "name": "IMG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2060,
+        -1220
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=wget -O /tmp/tmp/{{ $json.image.split('/').pop().split('?')[0]}} {{ $json.image }}"
+      },
+      "id": "49da72f2-e84a-40a9-a8de-2fdbae80b145",
+      "name": "Execute Command",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        -1420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $('DESRIPTION').item.json.description.length() }}",
+              "value2": 800
+            }
+          ]
+        }
+      },
+      "id": "7c4b9b08-b403-4b71-86fb-f1ad66437244",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        -860
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "=/tmp/tmp/{{ $('IMG').item.json.image .split('/').pop().split('?')[0]}}",
+        "dataPropertyName": "img"
+      },
+      "id": "ca803c9a-3218-4bf4-b6d7-d8cffdc2df0b",
+      "name": "Read Binary Files",
+      "type": "n8n-nodes-base.readBinaryFiles",
+      "typeVersion": 1,
+      "position": [
+        2420,
+        -1420
+      ],
+      "retryOnFail": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/dymua",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "www.remontmentalky",
+          "mode": "list",
+          "cachedResultName": "www.remontmentalky",
+          "cachedResultUrl": "https://github.com/dymua/www.remontmentalky"
+        },
+        "filePath": "assets/images",
+        "binaryData": true,
+        "binaryPropertyName": "img",
+        "commitMessage": "=Create assets/images/{{ $('IMG').item.json.image .split('/').pop().split('?')[0]}}",
+        "additionalParameters": {
+          "branch": {
+            "branch": "main"
+          }
+        }
+      },
+      "id": "40b5aeea-0c71-40bd-80dc-0d54b096a921",
+      "name": "GitHub1",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        -1420
+      ],
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "filename",
+              "stringValue": "={{ $('TG').item.json.filename }}-{{ $('Item Lists').item.json.title.replace(/[^a-zA-Z0-9а-яА-ЯіІїЇєЄ]+/g, ' ').trim().replace(/ +/g, '-').toLowerCase()  }}"
+            },
+            {
+              "name": "url",
+              "stringValue": "={{ $('Item Lists').item.json.title.replace(/[^a-zA-Z0-9а-яА-ЯіІїЇєЄ]+/g, ' ').trim().replace(/ +/g, '-').toLowerCase()  }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "67ff17f0-c5ca-4d6f-b4e9-2ffab913fa43",
+      "name": "FN",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1800,
+        -760
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $('Filter_Date').item.json.title }}"
+            },
+            {
+              "name": "category",
+              "stringValue": "={{ $('Filter_Date').item.json.category }}"
+            },
+            {
+              "name": "description",
+              "stringValue": "={{ $('DESRIPTION').item.json.description.slice(0, 700).match(/.*\\./s) }} ... <a href='https://remontmentalky.txthivehub.com/{{ $('FN').item.json.url }}'>далі</a> "
+            },
+            {
+              "name": "channel",
+              "stringValue": "={{ $('TG').item.json['TITLE'] }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "cd0366b4-4331-42e2-837b-be098a18a967",
+      "name": "POST_LONG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2380,
+        -540
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $('Filter_Date').item.json.title }}"
+            },
+            {
+              "name": "category",
+              "stringValue": "={{ $('Filter_Date').item.json.category }}"
+            },
+            {
+              "name": "description",
+              "stringValue": "={{ $('DESRIPTION').item.json.description }}"
+            },
+            {
+              "name": "channel",
+              "stringValue": "={{ $('TG').item.json['TITLE'] }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "77a4b9de-e91c-4b9a-88f0-cae88a7cb4af",
+      "name": "POST",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        2260,
+        -940
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/dymua",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "www.remontmentalky",
+          "mode": "list",
+          "cachedResultName": "www.remontmentalky",
+          "cachedResultUrl": "https://github.com/dymua/www.remontmentalky"
+        },
+        "filePath": "=_posts/{{ $json.filename }}.md",
+        "fileContent": "=---\nlayout: post\ntitle:  \"{{ $('Filter_Date').item.json.title }}\"\nauthor: psy\ncategories: [{{ $('Filter_Date').item.json.category }}]\nimage: {{ $('IMG').item.json.image }}\ntags: \n---\n\n{{ $('DESRIPTION').item.json.description }}\n\n\n",
+        "commitMessage": "=Create /_posts/{{ $('TG').item.json.filename }}.md "
+      },
+      "id": "7e4f2177-323f-4cec-8a1f-016c5ff0c806",
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        -620
+      ],
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "GoogleSheets": {
+      "main": [
+        [
+          {
+            "node": "Filter_Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter_Date": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_keywords": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI_article": {
+      "main": [
+        [
+          {
+            "node": "Fields description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fields description": {
+      "main": [
+        [
+          {
+            "node": "DESRIPTION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "IMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF description": {
+      "main": [
+        [
+          {
+            "node": "DESRIPTION",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI_article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TG": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "IF description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        []
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "TG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DESRIPTION": {
+      "main": [
+        [
+          {
+            "node": "OpenAI_keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "TG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IMG": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Read Binary Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Binary Files": {
+      "main": [
+        [
+          {
+            "node": "GitHub1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FN": {
+      "main": [
+        [
+          {
+            "node": "GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_LONG": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub": {
+      "main": [
+        [
+          {
+            "node": "POST_LONG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": [
+        18
+      ]
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "f1c25316-232e-41b6-b4a7-e8112e1f140b",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-18T15:44:54.483Z",
+      "updatedAt": "2023-12-18T15:44:54.483Z",
+      "id": "2Mg8DtZLVWubC3Zb",
+      "name": "GoogleSheet"
+    },
+    {
+      "createdAt": "2023-12-18T15:45:00.649Z",
+      "updatedAt": "2023-12-18T15:45:00.649Z",
+      "id": "6dbx1Oinpei6954y",
+      "name": "Publish"
+    },
+    {
+      "createdAt": "2024-03-08T11:08:13.985Z",
+      "updatedAt": "2024-03-08T11:08:13.985Z",
+      "id": "TgQl6ieaIe9VK9k6",
+      "name": "remontmentalky"
+    }
+  ]
+}

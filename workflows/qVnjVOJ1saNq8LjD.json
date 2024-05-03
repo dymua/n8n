@@ -1,0 +1,165 @@
+{
+  "createdAt": "2023-12-17T13:56:52.463Z",
+  "updatedAt": "2023-12-17T13:58:43.306Z",
+  "id": "qVnjVOJ1saNq8LjD",
+  "name": "Send new YouTube channel videos to Telegram",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "id",
+              "value": "={{$node[\"GetVideosYT\"].json[\"id\"][\"videoId\"]}}"
+            },
+            {
+              "name": "url",
+              "value": "=https://youtu.be/{{$node[\"GetVideosYT\"].json[\"id\"][\"videoId\"]}}"
+            },
+            {
+              "name": "title",
+              "value": "={{$node[\"GetVideosYT\"].json[\"snippet\"][\"title\"]}}"
+            }
+          ],
+          "boolean": []
+        },
+        "options": {}
+      },
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        670,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "d5c3ef72-e502-49b1-bae5-991285ac895b"
+    },
+    {
+      "parameters": {
+        "functionCode": "const new_items = [];\nconst data = this.getWorkflowStaticData('node');\n\ndata.ids = data.ids || [];\n\nfor (var i=0; i<items.length; i++) {\n  if (data.ids.includes(items[i].json.id)) {\n    break;\n  } else {\n    new_items.push({json: {id: items[i].json.id, url: items[i].json.url, title: items[i].json.title}});\n  }\n}\n\ndata.ids = items.map(item => item.json.id)\nreturn new_items;\n"
+      },
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        800,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "41e25bff-66ba-4660-ba7e-e461c6662219"
+    },
+    {
+      "parameters": {
+        "interval": 23,
+        "unit": "hours"
+      },
+      "name": "CheckTime",
+      "type": "n8n-nodes-base.interval",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "592a588d-278b-46d6-bae0-a4d16f57ddec"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "limit": 1,
+        "filters": {
+          "channelId": "UCI78AdiI6f7VKhqW1i4B3Rw"
+        },
+        "options": {
+          "order": "date"
+        }
+      },
+      "name": "GetVideosYT",
+      "type": "n8n-nodes-base.youTube",
+      "position": [
+        540,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "8ceeb645-e18c-4340-9508-24a742482f57",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "GEHTo5WIptQMWb7Z",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1001178002763",
+        "text": "=Nuovo video di almi su YouTube!\n<b>{{$node[\"Function\"].json[\"title\"]}}</b>\n\n{{$node[\"Function\"].json[\"url\"]}}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "name": "SendVideo",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        960,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "c16d7e3a-9bb6-4a50-9eed-0405aab531e9"
+    }
+  ],
+  "connections": {
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Function",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Function": {
+      "main": [
+        [
+          {
+            "node": "SendVideo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckTime": {
+      "main": [
+        [
+          {
+            "node": "GetVideosYT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetVideosYT": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "76d1596d-d424-48ed-8df9-ab9e2967f6e9",
+  "triggerCount": 0,
+  "tags": []
+}

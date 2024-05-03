@@ -1,0 +1,138 @@
+{
+  "createdAt": "2023-12-26T07:06:27.639Z",
+  "updatedAt": "2023-12-26T07:06:27.639Z",
+  "id": "JRnbdLTRVqKfWt9G",
+  "name": "Download a file and upload it to an FTP Server",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "0cf6c37f-54de-4876-8dce-468bc466d95c"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/upload/n8n_logo.png"
+      },
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "position": [
+        780,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "cfcbd6af-680c-4d0b-9204-80d5288d6a38"
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "path": "/upload/"
+      },
+      "name": "FTP1",
+      "type": "n8n-nodes-base.ftp",
+      "position": [
+        980,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "406c0062-c058-4537-8366-8da754115764"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n.io/n8n-logo.png",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        580,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "916df9ba-6526-4959-8819-c4d0680e9236"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "list",
+        "owner": {
+          "__rl": true,
+          "mode": "url",
+          "value": "",
+          "__regex": "https:\\/\\/github.com\\/([-_0-9a-zA-Z]+)"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "url",
+          "value": "",
+          "__regex": "https:\\/\\/github.com\\/(?:[-_0-9a-zA-Z]+)\\/([-_.0-9a-zA-Z]+)"
+        }
+      },
+      "id": "4d402909-0775-4958-873c-31f2233d6753",
+      "name": "GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "0353ed93-b204-416c-8225-1cc2d798b186",
+  "triggerCount": 0,
+  "tags": []
+}

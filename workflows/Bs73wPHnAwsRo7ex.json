@@ -1,0 +1,590 @@
+{
+  "createdAt": "2024-01-10T17:01:06.758Z",
+  "updatedAt": "2024-05-02T09:39:20.973Z",
+  "id": "Bs73wPHnAwsRo7ex",
+  "name": "🌐PUBLISH RSS ->TG @CyberSec911 - [EN]",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 19,
+        "unit": "minutes"
+      },
+      "id": "b2997fba-9c96-42bd-8460-273faf9d3257",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        380
+      ],
+      "webhookId": "8835501b-155b-4856-aec0-b3a21a4efd13"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1002131588974",
+        "file": "={{ $('POST').item.json.image }}",
+        "additionalFields": {
+          "caption": "={{ $json.text }}\n...\n#Cyber_Security #КіберБезпека <a href=\"https://t.me/CyberSec911\">Cyber Security | КіберБезпека</a>",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "c9085c87-a0f2-438c-a354-4a4266f93f05",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        -260
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=<b><a href=\"{{$json.linkGoogleTranslate }}\">{{ $json.title }}</></b>\n{{ $json.description.slice(0, 1000) }}",
+        "translateTo": "UK",
+        "additionalFields": {
+          "sourceLang": "EN-US",
+          "splitSentences": "1",
+          "preserveFormatting": "1",
+          "formality": "default"
+        }
+      },
+      "id": "f4f93e0a-0809-43e7-86ad-bfb43701d895",
+      "name": "DeepL",
+      "type": "n8n-nodes-base.deepL",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -20
+      ],
+      "credentials": {
+        "deepLApi": {
+          "id": "r9sxheuoE5jGNrZp",
+          "name": "DeepL affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "linkGoogleTranslate",
+              "stringValue": "={{$('POST').item.json.link .replace($('POST').item.json.link .extractDomain(),$('POST').item.json.link .extractDomain().replaceAll(\"-\", \"--\").replaceAll(\".\", \"-\")+'.translate.goog')}}?_x_tr_sl=en&_x_tr_tl=uk&_x_tr_hl=uk&_x_tr_pto=wapp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ea355ae1-1efe-4f3f-a863-d81228678676",
+      "name": "GT Link",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "46b82e38-fd00-4695-acf9-270f257de8f3",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -80,
+        -260
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ Object.keys($json).length}}\n\n\n\n\n",
+              "operation": "smallerEqual"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "7b42713a-4d9d-4c13-bd41-646e5f3d6a9e",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        360,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - Cyber Security-КіберБезпека",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "url",
+              "lookupValue": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "21096f4a-941f-4467-8194-720da911c68e",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        -240
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - Cyber Security-КіберБезпека",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $('POST').item.json.link }}",
+            "date": "={{ Date.now() }}",
+            "link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "useAppend": false
+        }
+      },
+      "id": "a323bc53-971c-4751-b83e-45c2c85d6443",
+      "name": "Google Sheets3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        -260
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 12,
+              "minute": 39
+            }
+          ]
+        },
+        "feedUrl": "https://cybersecuritynews.com/category/cyber-attack/feed/"
+      },
+      "id": "77469a59-14ee-4082-80ee-a2ac2c199ae0",
+      "name": "RSS Feed Trigger2",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "minute": 39
+            }
+          ]
+        },
+        "feedUrl": "https://cybersecuritynews.com/category/cyber-ai/feed/"
+      },
+      "id": "e0926fde-b59f-4fe9-9bb6-7f42f193b6b0",
+      "name": "RSS Feed Trigger3",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "minute": 39
+            }
+          ]
+        },
+        "feedUrl": "https://cybersecuritynews.com/category/what-is/feed/"
+      },
+      "id": "019607f0-cfc7-4647-8698-eb2f9d1ba6bd",
+      "name": "RSS Feed Trigger4",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.linkpreview.net?key=7c3dcb05a41be73efa867ef21b0feb93",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.link }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b78e3022-f8f1-4caa-ba02-b1c6f9254587",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -620,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "={{ $('RSS').item.json.title }}"
+            },
+            {
+              "name": "link",
+              "value": "={{ $('RSS').item.json.url }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('RSS').item.json.description }}"
+            },
+            {
+              "name": "image",
+              "value": "={{ $('RSS').item.json.image }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "POST",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        620,
+        -260
+      ],
+      "typeVersion": 1,
+      "id": "f84034a2-6c5f-4e03-897c-f77350b4f7b6"
+    },
+    {
+      "parameters": {
+        "operation": "limit",
+        "maxItems": 20
+      },
+      "id": "ce488d31-543e-4a61-8b13-ef50a776e24a",
+      "name": "RSS",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -320,
+        -260
+      ]
+    }
+  ],
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepL": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GT Link": {
+      "main": [
+        [
+          {
+            "node": "DeepL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST": {
+      "main": [
+        [
+          {
+            "node": "GT Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:RSS Feed Trigger": {
+      "lastTimeChecked": "2024-01-12T12:01:56Z"
+    },
+    "node:RSS Feed Trigger1": {
+      "lastTimeChecked": "2024-01-12T12:01:56Z"
+    },
+    "node:RSS Feed Trigger2": {
+      "lastTimeChecked": "2024-05-02T09:39:19Z"
+    },
+    "node:RSS Feed Trigger4": {
+      "lastTimeChecked": "2024-05-01T11:39:40Z"
+    },
+    "node:RSS Feed Trigger3": {
+      "lastTimeChecked": "2024-05-01T11:39:45Z"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "90633f77-139c-49f1-9246-931ea89668f5",
+  "triggerCount": 3,
+  "tags": [
+    {
+      "createdAt": "2024-01-10T15:29:10.920Z",
+      "updatedAt": "2024-01-10T15:29:10.920Z",
+      "id": "xWkcJ1kTamdFzSHH",
+      "name": "CyberSec911"
+    }
+  ]
+}

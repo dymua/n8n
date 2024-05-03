@@ -1,0 +1,76 @@
+{
+  "createdAt": "2023-12-14T17:37:56.878Z",
+  "updatedAt": "2023-12-15T09:03:29.303Z",
+  "id": "EmAZ8nIloutMUNir",
+  "name": "R`SS -> TG",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        }
+      },
+      "id": "14c167b0-6176-4056-b05c-87a9e7e76781",
+      "name": "RSS Feed Trigger",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        900,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1001752090126",
+        "replyMarkup": "replyKeyboard",
+        "replyKeyboardOptions": {},
+        "additionalFields": {
+          "caption": "",
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "1f06476e-1156-4667-82ed-b469f9b9c9da",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1060,
+        580
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "@txtHiveHub_Publisher_bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "7c2df86d-c285-411b-b5a4-323dbab3889a",
+  "triggerCount": 0,
+  "tags": []
+}

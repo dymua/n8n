@@ -1,0 +1,484 @@
+{
+  "createdAt": "2023-12-17T12:11:15.618Z",
+  "updatedAt": "2024-05-03T05:17:00.029Z",
+  "id": "FfJ6NwaIebCj1B01",
+  "name": "2 PUBLISH GSheet -> TG lawvolkov",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2,
+              "triggerAtMinute": 17
+            }
+          ]
+        }
+      },
+      "id": "93cce6c9-a61b-46c7-be6d-9704b574f5a7",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        520
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "aa8a4f8b-d1b0-46ae-95b6-0d801df98c2f",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        460,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json.chatID }}",
+        "file": "={{ $json.image }}",
+        "additionalFields": {
+          "caption": "={{ $json.description }}",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "c6bcadd2-20a4-42bf-b9dc-1a118e72cc52",
+      "name": "Telegram - PostPhoto",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        440
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatID }}",
+        "text": "={{ $json.description }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "8e4c817d-e13c-46b5-a813-bd733689fcce",
+      "name": "Telegram - PostMessage",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        660
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1Yq-wY0CTkq-jDGthEcmDntoT7OgEgKbkhN7ypvqFGg0",
+          "mode": "list",
+          "cachedResultName": "TG lawyer post rss",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yq-wY0CTkq-jDGthEcmDntoT7OgEgKbkhN7ypvqFGg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "POST",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yq-wY0CTkq-jDGthEcmDntoT7OgEgKbkhN7ypvqFGg0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "publish",
+            "post_link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}",
+            "TG post id": "={{ $json.result.message_id }}",
+            "TG time": "={{ $json.result.date }}",
+            "row_number": "={{ $('IF1 IMG').item.json.row_number }}",
+            "TG_Publish": "={{ $json.result.date }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pubDate",
+              "displayName": "pubDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post_link",
+              "displayName": "post_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TG post id",
+              "displayName": "TG post id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "TG_Publish",
+              "displayName": "TG_Publish",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "35a6274f-f9dd-41d5-8771-04f213eee1db",
+      "name": "Google Sheets Message",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Yq-wY0CTkq-jDGthEcmDntoT7OgEgKbkhN7ypvqFGg0",
+          "mode": "list",
+          "cachedResultName": "TG lawyer post rss",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yq-wY0CTkq-jDGthEcmDntoT7OgEgKbkhN7ypvqFGg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "POST",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yq-wY0CTkq-jDGthEcmDntoT7OgEgKbkhN7ypvqFGg0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "ready"
+            }
+          ]
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          },
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "49119ac7-98fa-4b84-bce5-13bce9f8674b",
+      "name": "GoogleSheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        540
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{ $json.pubDate }}",
+              "operation": "before",
+              "value2": "={{ DateTime.now() }}"
+            }
+          ]
+        }
+      },
+      "id": "b6547fea-9256-4d96-9ee0-0f80fd473a5b",
+      "name": "IF pubDate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        860,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.image }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "7ba48f02-4a25-4647-818d-8446ff2ddbef",
+      "name": "IF1 IMG",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - PostMessage": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GoogleSheets": {
+      "main": [
+        [
+          {
+            "node": "IF pubDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF pubDate": {
+      "main": [
+        [
+          {
+            "node": "IF1 IMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1 IMG": {
+      "main": [
+        [
+          {
+            "node": "Telegram - PostPhoto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram - PostMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - PostPhoto": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": [
+        8
+      ]
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "2ab7cff3-1f5a-4369-bab1-0df714b12818",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-18T15:44:54.483Z",
+      "updatedAt": "2023-12-18T15:44:54.483Z",
+      "id": "2Mg8DtZLVWubC3Zb",
+      "name": "GoogleSheet"
+    },
+    {
+      "createdAt": "2023-12-18T15:45:00.649Z",
+      "updatedAt": "2023-12-18T15:45:00.649Z",
+      "id": "6dbx1Oinpei6954y",
+      "name": "Publish"
+    }
+  ]
+}

@@ -1,0 +1,655 @@
+{
+  "createdAt": "2023-12-29T16:32:13.779Z",
+  "updatedAt": "2024-04-15T17:01:56.006Z",
+  "id": "orXCvstEvC9izSHE",
+  "name": "PUBLISH GSheet -> TG @AIntellekt",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12,
+              "triggerAtMinute": null
+            }
+          ]
+        }
+      },
+      "id": "008a5d9a-d397-4ec1-9736-f315b8c62044",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        -80
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "43cef1fc-4b55-42b2-ab8c-6d40517ce03f",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $json.ChatID }}",
+        "file": "={{ $json.image }}",
+        "additionalFields": {
+          "caption": "={{ $json.TEXT }}",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "008f546d-1255-4cef-b395-5f220aebfb64",
+      "name": "Telegram - PostPhoto",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1700,
+        -120
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.ChatID }}",
+        "text": "={{ $json.TEXT }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "6339f42a-ace5-4df3-b1b9-43aba415bbff",
+      "name": "Telegram - PostMessage",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1700,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0",
+          "mode": "list",
+          "cachedResultName": "post - ШІнтелект",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "ai_tools",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('GoogleSheets').item.json.row_number }}",
+            "STATUS": "published",
+            "pubLink": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}",
+            "pubDate": "={{ $json.result.date }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "STATUS",
+              "displayName": "STATUS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pubLink",
+              "displayName": "pubLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pubDate",
+              "displayName": "pubDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LINK",
+              "displayName": "LINK",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TEXT",
+              "displayName": "TEXT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TITLE",
+              "displayName": "TITLE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DESCRIPTION",
+              "displayName": "DESCRIPTION",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PRICE",
+              "displayName": "PRICE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TAG",
+              "displayName": "TAG",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "use",
+              "displayName": "use",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "DESCRIPTION_SHORT",
+              "displayName": "DESCRIPTION_SHORT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "MAX",
+              "displayName": "MAX",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TO_MAX",
+              "displayName": "TO_MAX",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "URL_TRANSLATE",
+              "displayName": "URL_TRANSLATE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "208de7c1-60f9-4ade-a2c1-31a159f2fb8d",
+      "name": "Google Sheets Message",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0",
+          "mode": "list",
+          "cachedResultName": "post - ШІнтелект",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "ai_tools",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "STATUS",
+              "lookupValue": "ready"
+            }
+          ]
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          },
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "535a740a-2073-4c3e-a601-36a8778b32d1",
+      "name": "GoogleSheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        340,
+        -20
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.image }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "3d9a3240-e2d4-4d5d-a3cf-9bbfd1ee139b",
+      "name": "IF1 IMG",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## https://t.me/AIntellekt\n",
+        "width": 369
+      },
+      "id": "099914b7-f6bf-471a-96cb-7105eb326c66",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.TEXT }}",
+        "translateTo": "UK",
+        "additionalFields": {
+          "splitSentences": "0",
+          "preserveFormatting": "1",
+          "formality": "default"
+        }
+      },
+      "id": "97bc0584-2312-4f11-b308-beb7fcde29f8",
+      "name": "DeepL",
+      "type": "n8n-nodes-base.deepL",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -40
+      ],
+      "credentials": {
+        "deepLApi": {
+          "id": "rsdpQNPUeNmLf4V9",
+          "name": "DeepL affprn+tg_aintellekt@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.TEXT }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "eb97e7c4-71de-40d4-8227-a7c7e6ab3aa3",
+      "name": "IF TEXT",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "TEXT",
+              "stringValue": "=<b><a href=\"{{ $('IF TEXT').item.json.URL_TRANSLATE }}\">{{ $json.text }}</a></b>\n{{ $('DeepL').item.json.text }}\n\n{{ $('IF TEXT').item.json.PRICE }} {{ $('IF TEXT').item.json.TAG }}  <a href=\"https://t.me/+eKPX_oXEXH1hMjgy\">🤖 ШІнтелект | Про Штучний Інтелект доступною та зрозумілою</a>"
+            },
+            {
+              "name": "image",
+              "stringValue": "={{ $('IF TEXT').item.json.image }}"
+            },
+            {
+              "name": "ChatID",
+              "type": "numberValue",
+              "numberValue": "={{ $('IF TEXT').item.json.ChatID }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "364b8fa8-e0e0-4c9b-9365-21c4d1eb7a95",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1240,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{ $('IF TEXT').item.json.TITLE }}",
+        "translateTo": "UK",
+        "additionalFields": {
+          "splitSentences": "0",
+          "preserveFormatting": "1",
+          "formality": "more"
+        }
+      },
+      "id": "2e32c108-87ea-47e3-b965-aa4bb777629c",
+      "name": "DeepL Title",
+      "type": "n8n-nodes-base.deepL",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        -40
+      ],
+      "credentials": {
+        "deepLApi": {
+          "id": "rsdpQNPUeNmLf4V9",
+          "name": "DeepL affprn+tg_aintellekt@gmail.com"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "GoogleSheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - PostMessage": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GoogleSheets": {
+      "main": [
+        [
+          {
+            "node": "IF TEXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1 IMG": {
+      "main": [
+        [
+          {
+            "node": "Telegram - PostPhoto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram - PostMessage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - PostPhoto": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepL": {
+      "main": [
+        [
+          {
+            "node": "DeepL Title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF TEXT": {
+      "main": [
+        [
+          {
+            "node": "DeepL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "IF1 IMG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepL Title": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": [
+        18
+      ]
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "0b72dbed-ab05-4e88-a04a-41aa38d6bbe3",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-18T15:44:54.483Z",
+      "updatedAt": "2023-12-18T15:44:54.483Z",
+      "id": "2Mg8DtZLVWubC3Zb",
+      "name": "GoogleSheet"
+    },
+    {
+      "createdAt": "2023-12-18T15:45:00.649Z",
+      "updatedAt": "2023-12-18T15:45:00.649Z",
+      "id": "6dbx1Oinpei6954y",
+      "name": "Publish"
+    }
+  ]
+}

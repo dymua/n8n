@@ -1,0 +1,256 @@
+{
+  "createdAt": "2024-01-09T07:48:45.660Z",
+  "updatedAt": "2024-04-13T11:03:35.259Z",
+  "id": "xVPt25VvBaV3Sba8",
+  "name": "TELEGRAM test @POC",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "notStartsWith",
+              "value2": "/",
+              "output": 3
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/start",
+              "output": 1
+            },
+            {
+              "operation": "startsWith",
+              "value2": "=/pay",
+              "output": 2
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/"
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "2b08a795-f191-4658-8c3b-629806ac4654",
+      "name": "CheckCommand",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -460,
+        200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "id": "fdfc38f9-9537-4a3e-8b7e-1f8d58a14224",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        200
+      ],
+      "webhookId": "52bad61e-1335-4e51-99c2-b956c602dd8b",
+      "credentials": {
+        "telegramApi": {
+          "id": "dlunaGcJDzX2cHhM",
+          "name": "POC @workpoc_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=CALLBACK:\n{{ JSON.stringify($json)}}",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "3aa5862d-6b0f-4368-b599-a1a2dfa1c0cc",
+      "name": "Telegram Msg",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dlunaGcJDzX2cHhM",
+          "name": "POC @workpoc_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "messageId": "={{ $('msg_WAIT').item.json.result.message_id }}",
+        "replyMarkup": "inlineKeyboard",
+        "text": "={{ $json.processed_data.text }}\n \n",
+        "additionalFields": {}
+      },
+      "id": "d8c6ceef-6661-48f9-94d7-ea03bff03d93",
+      "name": "msg_ANSWER",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        340,
+        620
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dlunaGcJDzX2cHhM",
+          "name": "POC @workpoc_bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "ae899281-8ce1-4ac1-897e-f6d46705c675",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=MENU",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "keywords ",
+                    "additionalFields": {
+                      "switch_inline_query_current_chat": "/keywords :"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "контент",
+                    "additionalFields": {
+                      "switch_inline_query_current_chat": "",
+                      "switch_inline_query": "/subject : "
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "a42b995e-71bf-4532-999f-2b0cfbe9683a",
+      "name": "cmd_MENU",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        280
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dlunaGcJDzX2cHhM",
+          "name": "POC @workpoc_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=Привіт <b>{{ $('Telegram').item.json.message.chat.first_name }} </b>\nSTART",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "e674898e-6034-48cd-8aa6-ce98ffdee712",
+      "name": "cmd_START",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -120,
+        80
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dlunaGcJDzX2cHhM",
+          "name": "POC @workpoc_bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "CheckCommand": {
+      "main": [
+        [],
+        [
+          {
+            "node": "cmd_START",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "cmd_MENU",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_ANSWER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "CheckCommand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "bc7109bd-fb67-46ab-a592-9dc7705c56d9",
+  "triggerCount": 1,
+  "tags": []
+}

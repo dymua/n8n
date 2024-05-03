@@ -1,0 +1,839 @@
+{
+  "createdAt": "2024-01-12T16:01:06.650Z",
+  "updatedAt": "2024-05-02T15:00:12.558Z",
+  "id": "DKEudzmAbahMyfMP",
+  "name": "🌎 PUBLISH RSS -> TG @AIntellekt - EN",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 7,
+        "unit": "minutes"
+      },
+      "id": "63c8a696-a00e-4795-8ed5-6e546fe3586a",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        -880
+      ],
+      "webhookId": "a0bae621-19a3-4b44-a349-eeaf53d2c749"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1001942235268",
+        "file": "={{ $('POST').item.json.image }}",
+        "additionalFields": {
+          "caption": "={{ $json.text }}...\n\n#Штучний_Інтелект #AI #ШІ 🤖 <a href=\"https://t.me/UACyberSec\">ШІнтелект - Штучний Інтелект що та як.</a> ",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "4ec3774c-dc1d-4282-88ae-d32e8e038a93",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2020,
+        -1160
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=<a href=\"{{$json.link_translate }}\">{{ $json.title }}</a>\n\n{{ $json.description.slice(0,900)}}",
+        "translateTo": "UK",
+        "additionalFields": {
+          "sourceLang": "EN-US",
+          "splitSentences": "0",
+          "preserveFormatting": "0",
+          "formality": "default"
+        }
+      },
+      "id": "8312d70a-7424-43de-a234-f73f814fea31",
+      "name": "DeepL",
+      "type": "n8n-nodes-base.deepL",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        -960
+      ],
+      "credentials": {
+        "deepLApi": {
+          "id": "rsdpQNPUeNmLf4V9",
+          "name": "DeepL affprn+tg_aintellekt@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "link_translate",
+              "stringValue": "={{$json.link.replace($json.link.extractDomain(),$json.link.extractDomain().replaceAll(\"-\", \"--\").replaceAll(\".\", \"-\")+'.translate.goog')}}?_x_tr_sl=en&_x_tr_tl=uk&_x_tr_hl=uk&_x_tr_pto=wapp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a4735fc7-91d7-4e1d-9cb3-25602dbea082",
+      "name": "GT Link",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1780,
+        -960
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "388a08d8-92e1-425f-bebd-a1f04760d197",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1040,
+        -1180
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ Object.keys($json).length}}\n\n\n\n\n",
+              "operation": "smallerEqual"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "373de52d-7430-4f04-80b7-fc095f3c5b17",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        -1140
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - @AIntellekt - ШІнтелект",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 570037925,
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit#gid=570037925"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "url",
+              "lookupValue": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "65790898-492d-42c7-b84b-a6f9dd426dea",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1280,
+        -1140
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "={{ $('NEWS').item.json.title }}"
+            },
+            {
+              "name": "link",
+              "value": "={{ $('NEWS').item.json.url }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('NEWS').item.json.description }}"
+            },
+            {
+              "name": "image",
+              "value": "={{ $('NEWS').item.json.image }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "POST",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1760,
+        -1160
+      ],
+      "typeVersion": 1,
+      "id": "3a86bbf2-b801-4c4e-a317-3f092ad21a3d"
+    },
+    {
+      "parameters": {},
+      "id": "07eb801c-d87b-46d8-a0ce-9f3f12b56618",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -1340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "limit",
+        "maxItems": 20
+      },
+      "id": "e593fbad-168b-4e77-9021-40fa5b4f2d34",
+      "name": "NEWS",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        720,
+        -1260
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 10,
+              "minute": 23
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/65a1555eb4d2912f276daa7265a3eee635c6af4cec440d82.xml"
+      },
+      "id": "6bd9809f-a56b-46a5-9677-d67d39ed2ec4",
+      "name": "RSS Feed Trigger 1",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -420
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $('News').item.json.title }}"
+            },
+            {
+              "name": "url",
+              "stringValue": "={{ $('News').item.json.link }}"
+            },
+            {
+              "name": "description",
+              "stringValue": "={{ $('News').item.json.contentSnippet.replace(\"\\n(Feed generated with FetchRSS)\",\"\").trim() }}"
+            },
+            {
+              "name": "image",
+              "stringValue": "={{ $json.image }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "425c52cd-ed98-4022-b901-05a5b41bf1de",
+      "name": "RSS_SHORT",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        480,
+        -1260
+      ]
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=content",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "image",
+              "cssSelector": "img",
+              "returnValue": "=attribute",
+              "attribute": "src"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "name": "HTML Extract1",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        300,
+        -1260
+      ],
+      "notesInFlow": true,
+      "typeVersion": 1,
+      "id": "ae32e7ff-e3ce-463a-b91b-f07620c6b200",
+      "notes": "extract news data"
+    },
+    {
+      "parameters": {
+        "operation": "removeDuplicates",
+        "compare": "selectedFields",
+        "fieldsToCompare": "link",
+        "options": {}
+      },
+      "id": "bf6e1803-c6ca-435b-ac7c-90d4fd7da9c9",
+      "name": "News",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -40,
+        -1320
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 12,
+              "minute": 31
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/65a1555eb4d2912f276daa7265a159450b921119b15b5242.xml"
+      },
+      "id": "d46a358c-da78-41bf-b17f-710ec010b50d",
+      "name": "RSS Feed Trigger ",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        -1240
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX"
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/65a1555eb4d2912f276daa7265a158f7417cbc2cb872e092.xml"
+      },
+      "id": "00bc39f1-2999-46e8-920d-7953175feecc",
+      "name": "RSS Feed Trigger 2",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        -940
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 17,
+              "minute": 13
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/65a1555eb4d2912f276daa7265a15774bfec7a219d540662.xml"
+      },
+      "id": "2273be93-30d2-4393-b9a6-6ef9ea7e22b2",
+      "name": "RSS Feed Trigger 3",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - @AIntellekt - ШІнтелект",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 570037925,
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SnuMEQ6goBOCa1vAd0v6nh2tlL4hhYaNPt1mpWK8T-0/edit#gid=570037925"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $('POST').item.json.link }}",
+            "date": "={{ Date.now() }}",
+            "link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "useAppend": false
+        }
+      },
+      "id": "11e87ea8-30f3-45c3-bc80-89472a793016",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        2240,
+        -1160
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepL": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GT Link": {
+      "main": [
+        [
+          {
+            "node": "DeepL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST": {
+      "main": [
+        [
+          {
+            "node": "GT Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NEWS": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS_SHORT": {
+      "main": [
+        [
+          {
+            "node": "NEWS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract1": {
+      "main": [
+        [
+          {
+            "node": "RSS_SHORT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "News": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger 2": {
+      "main": [
+        [
+          {
+            "node": "News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger 3": {
+      "main": [
+        [
+          {
+            "node": "News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger 1": {
+      "main": [
+        [
+          {
+            "node": "News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger ": {
+      "main": [
+        [
+          {
+            "node": "News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    },
+    "global": {
+      "oldRSSIds": [
+        "Wed, 10 Jan 2024 10:11:25 +0000",
+        "Wed, 10 Jan 2024 08:23:14 +0000",
+        "Tue, 09 Jan 2024 12:32:22 +0000",
+        "Tue, 09 Jan 2024 11:48:20 +0000",
+        "Tue, 09 Jan 2024 11:14:10 +0000",
+        "Tue, 09 Jan 2024 10:12:35 +0000",
+        "Tue, 09 Jan 2024 09:05:32 +0000",
+        "Tue, 09 Jan 2024 08:55:36 +0000",
+        "Tue, 09 Jan 2024 06:36:44 +0000",
+        "Tue, 09 Jan 2024 06:32:16 +0000",
+        "Tue, 09 Jan 2024 06:12:59 +0000",
+        "Tue, 09 Jan 2024 05:48:45 +0000",
+        "Mon, 08 Jan 2024 11:53:42 +0000",
+        "Mon, 08 Jan 2024 11:02:58 +0000",
+        "Mon, 08 Jan 2024 09:14:09 +0000",
+        "Mon, 08 Jan 2024 08:12:07 +0000",
+        "Mon, 08 Jan 2024 06:44:35 +0000",
+        "Mon, 08 Jan 2024 06:29:47 +0000",
+        "Mon, 08 Jan 2024 05:38:44 +0000",
+        "Sun, 07 Jan 2024 12:38:11 +0000",
+        "Sun, 07 Jan 2024 10:41:17 +0000",
+        "Sun, 07 Jan 2024 07:09:20 +0000",
+        "Sun, 07 Jan 2024 07:01:46 +0000",
+        "Sat, 06 Jan 2024 08:47:15 +0000",
+        "Sat, 06 Jan 2024 08:32:51 +0000",
+        "Fri, 05 Jan 2024 11:53:57 +0000",
+        "Fri, 05 Jan 2024 11:17:28 +0000",
+        "Fri, 05 Jan 2024 08:36:09 +0000",
+        "Fri, 05 Jan 2024 08:11:50 +0000",
+        "Fri, 05 Jan 2024 07:03:41 +0000",
+        "Fri, 05 Jan 2024 06:36:50 +0000",
+        "Fri, 05 Jan 2024 06:20:04 +0000",
+        "Fri, 05 Jan 2024 05:40:56 +0000",
+        "Thu, 04 Jan 2024 12:25:49 +0000",
+        "Thu, 04 Jan 2024 11:19:26 +0000",
+        "Thu, 04 Jan 2024 11:10:42 +0000",
+        "Thu, 04 Jan 2024 09:27:20 +0000",
+        "Thu, 04 Jan 2024 07:47:21 +0000",
+        "Thu, 04 Jan 2024 07:02:23 +0000",
+        "Thu, 04 Jan 2024 06:33:42 +0000",
+        "Thu, 04 Jan 2024 05:56:30 +0000",
+        "Wed, 03 Jan 2024 13:07:04 +0000",
+        "Wed, 03 Jan 2024 13:03:40 +0000",
+        "Wed, 03 Jan 2024 11:15:08 +0000",
+        "Wed, 03 Jan 2024 11:10:29 +0000",
+        "Wed, 03 Jan 2024 08:49:16 +0000",
+        "Wed, 03 Jan 2024 06:45:17 +0000",
+        "Wed, 03 Jan 2024 06:41:52 +0000",
+        "Tue, 02 Jan 2024 10:40:41 +0000",
+        "Tue, 02 Jan 2024 10:29:42 +0000",
+        "Tue, 02 Jan 2024 08:23:47 +0000",
+        "Tue, 02 Jan 2024 08:16:37 +0000",
+        "Tue, 02 Jan 2024 07:21:41 +0000",
+        "Tue, 02 Jan 2024 06:45:51 +0000",
+        "Tue, 02 Jan 2024 06:11:21 +0000",
+        "Tue, 02 Jan 2024 04:51:25 +0000",
+        "Mon, 01 Jan 2024 18:47:15 +0000",
+        "Mon, 01 Jan 2024 09:22:52 +0000",
+        "Mon, 01 Jan 2024 09:14:43 +0000",
+        "Sun, 31 Dec 2023 06:55:50 +0000",
+        "Sun, 31 Dec 2023 05:56:35 +0000",
+        "Sat, 30 Dec 2023 10:28:43 +0000",
+        "Sat, 30 Dec 2023 06:25:53 +0000",
+        "Fri, 29 Dec 2023 11:50:54 +0000",
+        "Fri, 29 Dec 2023 10:31:13 +0000",
+        "Fri, 29 Dec 2023 09:28:01 +0000",
+        "Fri, 29 Dec 2023 08:26:51 +0000",
+        "Fri, 29 Dec 2023 07:46:19 +0000",
+        "Fri, 29 Dec 2023 06:22:49 +0000",
+        "Fri, 29 Dec 2023 06:08:14 +0000",
+        "Thu, 28 Dec 2023 10:29:51 +0000",
+        "Thu, 28 Dec 2023 08:05:11 +0000",
+        "Thu, 28 Dec 2023 08:02:20 +0000",
+        "Thu, 28 Dec 2023 06:45:37 +0000",
+        "Thu, 28 Dec 2023 06:26:44 +0000",
+        "Thu, 28 Dec 2023 05:08:16 +0000",
+        "Wed, 27 Dec 2023 14:04:48 +0000",
+        "Wed, 27 Dec 2023 12:53:58 +0000",
+        "Wed, 27 Dec 2023 12:10:26 +0000",
+        "Wed, 27 Dec 2023 11:37:53 +0000",
+        "Wed, 27 Dec 2023 10:01:36 +0000",
+        "Wed, 27 Dec 2023 08:04:44 +0000",
+        "Wed, 27 Dec 2023 06:26:31 +0000",
+        "Tue, 26 Dec 2023 08:19:52 +0000",
+        "Tue, 26 Dec 2023 06:24:01 +0000",
+        "Mon, 25 Dec 2023 18:30:58 +0000",
+        "Mon, 25 Dec 2023 15:30:27 +0000",
+        "Mon, 25 Dec 2023 12:30:22 +0000",
+        "Sun, 24 Dec 2023 18:30:01 +0000",
+        "Mon, 25 Dec 2023 13:17:00 +0530",
+        "Thu, 21 Dec 2023 00:00:00 -0500",
+        "Sun, 24 Dec 2023 11:18:00 +0530",
+        "Fri, 22 Dec 2023 08:00:00 -0500",
+        "Fri, 22 Dec 2023 22:17:00 +0530",
+        "Fri, 22 Dec 2023 18:49:00 +0530",
+        "Thu, 21 Dec 2023 12:26:42 -0500",
+        "Fri, 22 Dec 2023 18:16:00 +0530",
+        "Fri, 22 Dec 2023 13:16:00 +0530",
+        "Fri, 22 Dec 2023 11:04:00 +0530",
+        "Thu, 21 Dec 2023 22:18:00 +0530",
+        "Thu, 21 Dec 2023 18:08:00 +0530",
+        "Thu, 21 Dec 2023 16:23:00 +0530",
+        "Thu, 21 Dec 2023 15:33:00 +0530",
+        "Thu, 21 Dec 2023 12:52:00 +0530",
+        "Thu, 21 Dec 2023 09:11:00 +0530",
+        "Wed, 20 Dec 2023 19:02:00 +0530"
+      ]
+    },
+    "node:RSS Feed Trigger 1": {
+      "lastTimeChecked": "2024-05-02T07:23:58Z"
+    },
+    "node:RSS Feed Trigger ": {
+      "lastTimeChecked": "2024-05-02T09:31:49Z"
+    },
+    "node:RSS Feed Trigger 2": {
+      "lastTimeChecked": "2024-05-02T15:00:12Z"
+    },
+    "node:RSS Feed Trigger 3": {
+      "lastTimeChecked": "2024-05-02T14:13:53Z"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "14fb1705-22a9-4608-9e55-5b3075b19f61",
+  "triggerCount": 4,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-15T16:47:29.732Z",
+      "updatedAt": "2023-12-15T16:47:29.732Z",
+      "id": "ioGKSviA9beOvB8G",
+      "name": "news"
+    },
+    {
+      "createdAt": "2024-01-12T16:01:04.494Z",
+      "updatedAt": "2024-01-12T16:01:04.494Z",
+      "id": "YV3Ksumi44CRBXKL",
+      "name": "AIntellekt"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "createdAt": "2024-02-15T09:41:30.258Z",
+  "updatedAt": "2024-02-16T16:41:41.674Z",
+  "id": "DSRXCWvt9FToihXr",
+  "name": "empAI - 01",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1a432ab1-7a3e-4e3a-bb93-710821186278",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        780,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/users",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "COMMAND",
+              "value": "SELECT"
+            },
+            {
+              "name": "SELECT",
+              "value": "uuid, id, request"
+            },
+            {
+              "name": "WHERE",
+              "value": "id ='5604495296'"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "32d56dd5-3191-4a94-982c-00a7a10203c6",
+      "name": "User",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1040,
+        300
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/ai/openai/chat_completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"user\": {\n        \"id\": \"54d06431-d813-4b8b-9efc-ea930abe7759\",\n        \"lng\": \"uk\"\n    },\n    \"empai\": {\n        \"employees_id\": \"empai-default#empai\",\n        \"path\": \"empai\"\n    },\n    \"answers\": [],\n    \"text_for_reply\": {\n        \"type\": \"\",\n        \"message\": \"\",\n        \"path\": \"\"\n    },\n    \"prompt\": {\n        \"type\": \"text\",\n        \"message\": \"Что такое ИИ\",\n        \"path\": \"\"\n    }\n}",
+        "options": {}
+      },
+      "id": "2a8ced36-1b18-4117-98b6-e0ec80056c68",
+      "name": "empai_chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1040,
+        540
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "messageId": "={{ $('msg_WAIT').item.json.result.message_id }}",
+        "replyMarkup": "inlineKeyboard",
+        "text": "=ANSWER",
+        "additionalFields": {}
+      },
+      "id": "3dc3c8eb-8d2c-458b-a6e3-bb877f1bca07",
+      "name": "msg_ANSWER",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        540
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dlunaGcJDzX2cHhM",
+          "name": "POC @workpoc_bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "empai_chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empai_chat": {
+      "main": [
+        [
+          {
+            "node": "msg_ANSWER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "empai_chat": [
+      {
+        "json": {
+          "processed_data": {
+            "text": "ИИ, или искусственный интеллект, - это область науки и технологий, которая занимается созданием компьютерных систем, способных имитировать и воспроизводить интеллектуальные функции человека. ИИ стремится разработать алгоритмы и модели, которые позволяют компьютерам учиться, анализировать информацию, принимать решения и выполнять задачи, требующие интеллектуальных способностей. ИИ используется во многих отраслях, включая медицину, финансы, автомобильную промышленность, распознавание речи и изображений, робототехнику и другие. Он позволяет решать сложные проблемы, автоматизировать процессы и создавать новые возможности для развития технологий.",
+            "prompt_tokens": 430,
+            "completion_tokens": 277,
+            "total_tokens": 707
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "40acaa27-064d-4acf-882d-f95b509952e8",
+  "triggerCount": 0,
+  "tags": []
+}

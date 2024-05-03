@@ -1,0 +1,366 @@
+{
+  "createdAt": "2023-12-18T12:30:54.274Z",
+  "updatedAt": "2023-12-18T12:30:54.274Z",
+  "id": "oz8oXTCzx2sBQnBQ",
+  "name": "Create an RSS feed based on a website's content 2",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "e833436d-7fd8-4442-8ab2-f06b6f8f14cc"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "post",
+        "options": {}
+      },
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "position": [
+        1260,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "526e315a-d816-4f41-aa97-fe8439389de9"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "post",
+              "cssSelector": ".blog-listing__post-content",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Extract Posts",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        1040,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "ca652cc0-155c-4b3f-834a-f078616f4687"
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"base_domain\"]}}/blog/category/release",
+        "responseFormat": "string",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "name": "Fetch Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        820,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "9091b165-a1e7-4dbe-a763-28a0c601c9f4"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "base_domain",
+              "value": "https://baserow.io"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set URL",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        600,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "b111ea0b-ce95-43a2-906e-19a008c0d221"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "link",
+              "value": "={{$item(0).$node[\"Set URL\"].json[\"base_domain\"]}}{{$json[\"link\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Complete Link",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        380,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "1d55a4aa-3dfe-4371-ab64-30caa3cdf54d"
+    },
+    {
+      "parameters": {
+        "value": "={{$json[\"date\"]}}",
+        "dataPropertyName": "date",
+        "toFormat": "YYYY-MM-DD",
+        "options": {}
+      },
+      "name": "Format Date",
+      "type": "n8n-nodes-base.dateTime",
+      "position": [
+        600,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "c4f0b30e-3238-4f36-8f3f-b05c57713787"
+    },
+    {
+      "parameters": {
+        "functionCode": "return {\n  rss_item: \n`<item>\n  <title>${item.title}</title>\n  <link>${item.link}</link>\n  <description>${item.description}</description>\n  <pubDate>${item.date}</pubDate>\n</item>`\n}"
+      },
+      "name": "Create RSS Items",
+      "type": "n8n-nodes-base.functionItem",
+      "position": [
+        820,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "431b6d8a-261f-4724-94e3-0a9aee34df0d"
+    },
+    {
+      "parameters": {
+        "path": "baserow-releases",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        380,
+        240
+      ],
+      "webhookId": "27c1e4db-568f-4bf9-9474-0898ce1173f7",
+      "typeVersion": 1,
+      "id": "ba4f0a46-a04f-416c-be12-0f3278401340"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{$json[\"feed\"]}}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "content-type",
+                "value": "application/xml"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        1260,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "bc4f1da5-2fa7-4c0c-8c84-0cac3b9d1988"
+    },
+    {
+      "parameters": {
+        "functionCode": "let feed =\n`<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<rss version=\"2.0\">\n\n<channel>\n  <title>Baserow Releases</title>\n  <link>https://baserow.io/blog/category/release</link>\n  <description>Stay up to date with the latest changes and updates of Baserow</description>\n  ${items.map(e => e.json.rss_item).join('\\n')}\n</channel>\n\n</rss>`;\n\nreturn [{\n  json: {\n    feed: feed\n  }\n}];"
+      },
+      "name": "Prepare Response",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        1040,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "863ff7e9-62d8-4547-b1f9-0097c6cad36d"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "post",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "date",
+              "cssSelector": ".blog-listing__post-info > strong"
+            },
+            {
+              "key": "title",
+              "cssSelector": ".blog-listing__post-title"
+            },
+            {
+              "key": "link",
+              "cssSelector": ".blog-listing__post-title > a",
+              "returnValue": "attribute",
+              "attribute": "href"
+            },
+            {
+              "key": "description",
+              "cssSelector": ".blog-listing__post-description"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        1480,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "1977453c-8db3-47da-827f-10c7bf1364dd"
+    }
+  ],
+  "connections": {
+    "Set URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Extract Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Date": {
+      "main": [
+        [
+          {
+            "node": "Create RSS Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complete Link": {
+      "main": [
+        [
+          {
+            "node": "Format Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Posts": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Website": {
+      "main": [
+        [
+          {
+            "node": "Extract Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Fields": {
+      "main": [
+        [
+          {
+            "node": "Complete Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create RSS Items": {
+      "main": [
+        [
+          {
+            "node": "Prepare Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "fcc7ed55-115a-444d-b331-69e4769dde6d",
+  "triggerCount": 0,
+  "tags": []
+}

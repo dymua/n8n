@@ -1,0 +1,1475 @@
+{
+  "createdAt": "2024-04-29T14:56:26.354Z",
+  "updatedAt": "2024-04-30T19:31:04.299Z",
+  "id": "yY7Iu3Wo2J0vZ7y0",
+  "name": "🤖 @Recom4uBot - Пораджу тобі",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $('Telegram').item.json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "notStartsWith",
+              "value2": "/",
+              "output": 3
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/start"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/",
+              "output": 1
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "78b06c57-1cbb-45ab-9bdc-11890b133825",
+      "name": "CheckCommand",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -880,
+        700
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$('Telegram_1').item.json.message.text }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "startsWith",
+              "value2": "/info"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/new",
+              "output": 3
+            },
+            {
+              "operation": "startsWith",
+              "value2": "/about",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "4a847065-0776-4640-871d-d787f6487496",
+      "name": "CheckCommand1",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        280,
+        1260
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram_1').item.json.message.chat.id }}",
+        "text": "= \nДоступно : <b>{{ $('user').item.json.request }}</b> запитів. \n\nДля поповнення балансу запитів оберіть команду /pay\n\n\n\n\n  ",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "550fa791-5c78-48f0-9e5f-14d6fa8a93d1",
+      "name": "msg_INFO",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        420,
+        1060
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/users",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "COMMAND",
+              "value": "SELECT"
+            },
+            {
+              "name": "SELECT",
+              "value": "*"
+            },
+            {
+              "name": "WHERE",
+              "value": "=id ='{{ $('Telegram_1').item.json.message.from.id  }}'\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "168573be-f212-4d10-867c-f624ee37dbf9",
+      "name": "user",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -20,
+        1300
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=<b>Відповідь на повідомлення.</b>\n\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "98d99271-994a-4fee-baeb-502fa7af7402",
+      "name": "msg_PAY",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        980
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram_1').item.json.message.chat.id }}",
+        "text": "=Новий сеанс розпочато.\nОпишіть свою ситуацію чи питання.\n\n\n\n\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "56149d05-2a20-4131-86da-65713e60f80d",
+      "name": "msg_QUESTION",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        580,
+        1500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://api.empai.store:443/empai/chat",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"user\": {\"uuid\": \"{{ $('user').item.json.uuid }}\"},\n\"empai\": \"empai-ent-astrologer\",\n\"path\": \"empai\"\n}",
+        "options": {}
+      },
+      "id": "7700f23a-8ef1-411e-be58-a5892f7e5864",
+      "name": "delete chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        1500
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.empai.store:443/chat_post_answers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"user\": {\"uuid\": \"{{ $('user').item.json.uuid }}\"},\n\"employees_id\": \"empai-ent-astrologer#empai\",\n\"answers\": [{\"type\":\"text\",\"answer\":\"{{$('Telegram_1').item.json.message.text.split(\"/about\")[1]?.trim()}}\",\"path\":\"\"}]\n}",
+        "options": {}
+      },
+      "id": "4f07d07c-84b9-405c-8cb5-db891d13272f",
+      "name": "about",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        800,
+        1360
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram_1').item.json.message.chat.id }}",
+        "text": "=Зрозумів та записав.\nНапиши деталізований запит або питання та надішли.\n\n\n\n\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "26212ba7-f49d-4704-8655-1d813c38cf50",
+      "name": "msg_about",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1020,
+        1320
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.empai.store:443/chat_get_answers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"user\": {\"uuid\": \"{{ $('user').item.json.uuid }}\"},\n    \"empai\": \"empai-ent-astrologer\",\n    \"path\": \"empai\"\n}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "c344ca65-20d0-48d8-88e7-dae56bde3c11",
+      "name": "empai_chat_answer_info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        620,
+        1120
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "jYE3Dnk0pIfxA9l5",
+          "name": "Custom Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "CBrsATcsuabLRkZg",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# @Recom4uBot \n\n## Offers from CPA",
+        "width": 357.3727810650888,
+        "color": 6
+      },
+      "id": "4ca34ed3-77e9-4bfe-944b-ce558efc42b3",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"Telegram\"].json[\"message\"][\"text\"].includes('req--') ? $node[\"Telegram\"].json[\"message\"][\"text\"].split('req--')[1] || '' : '';}}\n",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "464aec66-9590-46f3-bfe0-7ef11f3f3c62",
+      "name": "IF_REQ",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        200,
+        560
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e726f712-c767-4735-8d87-93a351ccd496",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "*"
+        ],
+        "additionalFields": {}
+      },
+      "id": "92a256b0-a96c-493c-8300-55db8f8e901b",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1500,
+        700
+      ],
+      "webhookId": "1ea59835-386a-4c3e-b1e9-29f508424313",
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "ERROR",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "disable_notification": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "fd42aed6-32fe-43a7-9534-f64759a2ea06",
+      "name": "Telegram Msg1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1080,
+        1000
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "offer",
+              "stringValue": "=D429"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "70a839f2-e3ee-451d-b3b6-2c35412fd367",
+      "name": "req_default",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        460,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "offer",
+              "stringValue": "={{ $('Telegram').item.json.message.text.includes('req--') ? $('Telegram').item.json.message.text.split('req--')[1] || '' : '';}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "da87e908-370c-4070-ba14-223e55d37895",
+      "name": "req",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        480,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1O01qWjiLDMzoZ94oNBeveZPx1bAs9sM_I_rQ0Cl734Y",
+          "mode": "list",
+          "cachedResultName": "Project - TG CPA",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1O01qWjiLDMzoZ94oNBeveZPx1bAs9sM_I_rQ0Cl734Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2069578175,
+          "mode": "list",
+          "cachedResultName": "offers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1O01qWjiLDMzoZ94oNBeveZPx1bAs9sM_I_rQ0Cl734Y/edit#gid=2069578175"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $json.offer }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "1d05eb13-bb6b-4f7d-b8d5-c757a4e52460",
+      "name": "OFFER",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        640
+      ],
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "file": "={{ $('OFFER').item.json.img }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "={{ $('OFFER').item.json.button }}",
+                    "additionalFields": {
+                      "callback_data": "=btn_{{ $('OFFER').item.json.id }}",
+                      "url": "={{ $('OFFER').item.json.link }}"
+                    }
+                  },
+                  {
+                    "text": " CB",
+                    "additionalFields": {
+                      "callback_data": "=OFFER_{{ $('OFFER').item.json.id }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "caption": "=<b>{{ $('OFFER').item.json.title }}</b> \n\n{{ $('OFFER').item.json.description }} {{ $('OFFER').item.json.link }}",
+          "disable_notification": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "bd9005bd-3ae6-4d37-b8d9-9e8a73a7d91a",
+      "name": "Telegram Msg",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1420,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $('Telegram').item.json.from.id }}"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "*"
+          ]
+        }
+      },
+      "id": "df8dd42e-9edc-4d9f-9371-b9ca02d5c424",
+      "name": "users",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -420,
+        580
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "pHPsjMnZuKwBwNct",
+          "name": "Postgres empai.ncu.lan - tg"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ JSON.stringify($node[\"users\"].json, null, 0).length }}",
+              "operation": "larger",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "fb929bc8-50f7-4175-8e82-e350835c01ea",
+      "name": "IF_USER",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        580
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "users",
+          "mode": "list",
+          "cachedResultName": "users"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $node[\"Telegram\"].json[\"message\"][\"from\"][\"id\"] }}\n",
+            "first_name": "={{ $node[\"Telegram\"].json[\"message\"][\"from\"][\"first_name\"] }}\n",
+            "last_name": "={{ $('Telegram').item.json.message.from.last_name }}",
+            "is_bot": "={{ $node[\"Telegram\"].json[\"message\"][\"from\"][\"is_bot\"] }}",
+            "language_code": "={{ $node[\"Telegram\"].json[\"message\"][\"from\"][\"language_code\"] }}",
+            "username": "={{ $node[\"Telegram\"].json[\"message\"][\"from\"][\"username\"] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_name",
+              "displayName": "last_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "is_bot",
+              "displayName": "is_bot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "language_code",
+              "displayName": "language_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "username",
+              "displayName": "username",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "*"
+          ]
+        }
+      },
+      "id": "1b99dfc8-58f7-4dec-ac7c-4ea73c58ded3",
+      "name": "users_create",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        700
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "pHPsjMnZuKwBwNct",
+          "name": "Postgres empai.ncu.lan - tg"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "bots_name",
+              "stringValue": "recom4ubot"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7537c051-aaa0-433d-899c-925afaa3b475",
+      "name": "CONFIG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        -620,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.user_bot (bot_name, status, conversation_dt, user_id)\nVALUES ('{{ $('CONFIG').item.json.bots_name }}', 'y', '{{ new Date().toISOString() }}', {{ $('Telegram').item.json.message.from.id }})\nON CONFLICT (bot_name, user_id)\nDO UPDATE SET status = 'y', conversation_dt ='{{ new Date().toISOString() }}';\n",
+        "options": {}
+      },
+      "id": "2c4f5a01-ed55-44d8-b196-cd206f46ed75",
+      "name": "users_bot_insert",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        700
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "pHPsjMnZuKwBwNct",
+          "name": "Postgres empai.ncu.lan - tg"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.description }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "15ad86ed-22e6-4d04-b095-77a8cb3ac52e",
+      "name": "IF_OFFERS",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        900,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('OFFER').item.json.img }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "4f968386-d564-4dc5-b0ed-ff50f4f6ead9",
+      "name": "IF_IMG",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.message.chat.id }}",
+        "text": "=<b>{{ $('OFFER').item.json.title }}</b> \n\n{{ $('OFFER').item.json.description }} {{ $('OFFER').item.json.link }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "={{ $('OFFER').item.json.button }}",
+                    "additionalFields": {
+                      "callback_data": "=btn_{{ $('OFFER').item.json.id }}",
+                      "url": "={{ $('OFFER').item.json.link }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "disable_notification": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "146b01af-39f4-4c8d-96d5-10b7e76ee367",
+      "name": "Telegram Msg2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1380,
+        700
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.callback_query.data }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "ea7b1a3d-8d5d-4b97-8297-02c5e87527a8",
+      "name": "IF_CallBack",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram').item.json.callback_query.message.chat.id }}",
+        "text": "=<b>ВCallBack</b>\n\n{{ $json.callback_query.data }}\n",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "22be08e0-fd54-40a4-9803-1e8017798a05",
+      "name": "msg_PAY1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        240
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "48dy6PXE9nV9Efnw",
+          "name": "Telegram @Recom4uBot - Пораджу тобі"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.callback_query.data }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "startsWith",
+              "value2": "OFFER_",
+              "outputKey": "0"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "ACTION_",
+              "outputKey": "1"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "2",
+              "outputKey": "BTN_"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "URL_",
+              "outputKey": "3"
+            },
+            {
+              "operation": "startsWith",
+              "value2": "ANSWER_",
+              "outputKey": "4"
+            }
+          ]
+        }
+      },
+      "id": "acef6eeb-1e6e-47f8-93c5-1b4f78df1bcc",
+      "name": "CALLBACK",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [
+        -840,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "user_bot",
+          "mode": "list",
+          "cachedResultName": "user_bot"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Telegram').item.json.message.from.id }}",
+            "bot_name": "={{ $('CONFIG').item.json.bots_name }}",
+            "status": "y",
+            "conversation_dt": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "bot_name",
+              "displayName": "bot_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversation_dt",
+              "displayName": "conversation_dt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "417ba6aa-4305-494d-a2ec-caf8864f1804",
+      "name": "users_bot_insert2",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        220,
+        840
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "pHPsjMnZuKwBwNct",
+          "name": "Postgres empai.ncu.lan - tg"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "CheckCommand": {
+      "main": [
+        [
+          {
+            "node": "CONFIG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "node": "msg_PAY",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckCommand1": {
+      "main": [
+        [
+          {
+            "node": "empai_chat_answer_info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "about",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "delete chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "user": {
+      "main": [
+        [
+          {
+            "node": "CheckCommand1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete chat": {
+      "main": [
+        [
+          {
+            "node": "msg_QUESTION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "about": {
+      "main": [
+        [
+          {
+            "node": "msg_about",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empai_chat_answer_info": {
+      "main": [
+        [
+          {
+            "node": "msg_INFO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_REQ": {
+      "main": [
+        [
+          {
+            "node": "req",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "req_default",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "IF_CallBack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "req_default": {
+      "main": [
+        [
+          {
+            "node": "OFFER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "req": {
+      "main": [
+        [
+          {
+            "node": "OFFER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OFFER": {
+      "main": [
+        [
+          {
+            "node": "IF_OFFERS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "users": {
+      "main": [
+        [
+          {
+            "node": "IF_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_USER": {
+      "main": [
+        [
+          {
+            "node": "IF_REQ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "users_create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "users_create": {
+      "main": [
+        [
+          {
+            "node": "users_bot_insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONFIG": {
+      "main": [
+        [
+          {
+            "node": "users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "users_bot_insert": {
+      "main": [
+        [
+          {
+            "node": "IF_REQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_OFFERS": {
+      "main": [
+        [
+          {
+            "node": "IF_IMG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "req_default",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_IMG": {
+      "main": [
+        [
+          {
+            "node": "Telegram Msg",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Msg2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_CallBack": {
+      "main": [
+        [
+          {
+            "node": "CALLBACK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CheckCommand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CALLBACK": {
+      "main": [
+        [
+          {
+            "node": "msg_PAY1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_PAY1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_PAY1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_PAY1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "msg_PAY1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "OFFER": [
+      {
+        "json": {
+          "row_number": 2,
+          "group": "default",
+          "id": "D429",
+          " name": " По замовчанню",
+          "title": "Назва рекомендації",
+          "description": "Детальний опис. Пояснення можливий перелік та іншке в html форматуванні",
+          "link": "https://empai.store",
+          "img": "https://empai.store/images/hero.png",
+          "button": "Запустити бота",
+          "btn_code": "",
+          "offer_stat": ""
+        }
+      }
+    ],
+    "Telegram": [
+      {
+        "json": {
+          "update_id": 897086396,
+          "callback_query": {
+            "id": "5624379935420799148",
+            "from": {
+              "id": 5604495296,
+              "is_bot": false,
+              "first_name": "Dmytro",
+              "last_name": "Hiven",
+              "username": "txtHiveHub",
+              "language_code": "uk"
+            },
+            "message": {
+              "message_id": 78,
+              "from": {
+                "id": 6886597922,
+                "is_bot": true,
+                "first_name": "Повідомлення 💚",
+                "username": "Recom4uBot"
+              },
+              "chat": {
+                "id": 5604495296,
+                "first_name": "Dmytro",
+                "last_name": "Hiven",
+                "username": "txtHiveHub",
+                "type": "private"
+              },
+              "date": 1714502713,
+              "photo": [
+                {
+                  "file_id": "AgACAgQAAxkDAANOZjE8Ofdn0ghXRg5bbeO-CRZbtc0AAlSyMRsaudRTG4JCLBOx300BAAMCAANzAAM0BA",
+                  "file_unique_id": "AQADVLIxGxq51FN4",
+                  "file_size": 2120,
+                  "width": 90,
+                  "height": 82
+                },
+                {
+                  "file_id": "AgACAgQAAxkDAANOZjE8Ofdn0ghXRg5bbeO-CRZbtc0AAlSyMRsaudRTG4JCLBOx300BAAMCAANtAAM0BA",
+                  "file_unique_id": "AQADVLIxGxq51FNy",
+                  "file_size": 23702,
+                  "width": 320,
+                  "height": 292
+                },
+                {
+                  "file_id": "AgACAgQAAxkDAANOZjE8Ofdn0ghXRg5bbeO-CRZbtc0AAlSyMRsaudRTG4JCLBOx300BAAMCAAN4AAM0BA",
+                  "file_unique_id": "AQADVLIxGxq51FN9",
+                  "file_size": 87154,
+                  "width": 800,
+                  "height": 729
+                },
+                {
+                  "file_id": "AgACAgQAAxkDAANOZjE8Ofdn0ghXRg5bbeO-CRZbtc0AAlSyMRsaudRTG4JCLBOx300BAAMCAAN5AAM0BA",
+                  "file_unique_id": "AQADVLIxGxq51FN-",
+                  "file_size": 126301,
+                  "width": 1064,
+                  "height": 970
+                }
+              ],
+              "caption": "Назва рекомендації Детальний опис. Пояснення можливий перелік та іншке в html форматуванні https://empai.store",
+              "caption_entities": [
+                {
+                  "offset": 0,
+                  "length": 18,
+                  "type": "bold"
+                },
+                {
+                  "offset": 94,
+                  "length": 19,
+                  "type": "url"
+                }
+              ],
+              "reply_markup": {
+                "inline_keyboard": [
+                  [
+                    {
+                      "text": "Запустити бота",
+                      "url": "https://empai.store/"
+                    },
+                    {
+                      "text": " CB",
+                      "callback_data": "btn_{{ $('OFFER').item.json.id }}"
+                    }
+                  ]
+                ]
+              }
+            },
+            "chat_instance": "3928505084176949651",
+            "data": "btn_{{ $('OFFER').item.json.id }}"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "ea5b4ecc-a244-4b4e-bd2e-1d3698d26e8f",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2024-04-23T09:31:55.297Z",
+      "updatedAt": "2024-04-23T09:31:55.297Z",
+      "id": "2VwM5KVeMokRz9gS",
+      "name": "bot"
+    },
+    {
+      "createdAt": "2024-04-29T14:56:39.485Z",
+      "updatedAt": "2024-04-29T14:56:39.485Z",
+      "id": "mAW2rF4Dow3tI4tB",
+      "name": "CPA"
+    }
+  ]
+}

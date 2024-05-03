@@ -1,0 +1,235 @@
+{
+  "createdAt": "2023-12-22T11:39:31.005Z",
+  "updatedAt": "2024-04-29T10:09:46.587Z",
+  "id": "ONSLFxCNhe9JWE4A",
+  "name": "TEST",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "50c65bca-df4d-4b14-98be-c79ec2057f1f",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        580,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "query",
+        "projectId": "n8n-empai-store",
+        "simple": false
+      },
+      "id": "b005db03-f6db-4e7d-a7e2-5efa0f199e21",
+      "name": "Google Cloud Firestore",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1,
+      "position": [
+        780,
+        280
+      ],
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "pd9cDpGY0hkAFlkw",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 20
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        240,
+        60
+      ],
+      "typeVersion": 1,
+      "id": "bf457c27-87db-400a-8db9-18e696fb59d2"
+    },
+    {
+      "parameters": {
+        "download": false,
+        "additionalFields": {}
+      },
+      "name": "NASA",
+      "type": "n8n-nodes-base.nasa",
+      "position": [
+        440,
+        60
+      ],
+      "typeVersion": 1,
+      "id": "68f86f16-8365-4be8-8ad2-a36a39c49062"
+    },
+    {
+      "parameters": {
+        "operation": "sendVideo",
+        "chatId": "-485365454",
+        "file": "={{$node[\"NASA\"].json[\"url\"]}}",
+        "additionalFields": {
+          "caption": "={{$node[\"NASA\"].json[\"title\"]}}",
+          "duration": 0,
+          "parse_mode": "HTML",
+          "thumb": ""
+        }
+      },
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        640,
+        60
+      ],
+      "typeVersion": 1,
+      "id": "645e118f-b3fa-419c-a133-c2956205c303"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "2039f42e-0718-4b25-80d6-90c02193f0a2",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        860,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "publication",
+        "operation": "getAll"
+      },
+      "id": "7a37f4be-c2a1-43df-89ea-483a5781c852",
+      "name": "Medium",
+      "type": "n8n-nodes-base.medium",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "id": "514daf60-c1a2-46d6-b9e1-a8cc9365a514",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "05eb8fe9-b158-4099-8dc3-83bf0a2eacda",
+      "name": "Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        460,
+        460
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Google Cloud Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "NASA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NASA": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "Medium",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medium": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "e79777ba-48ff-4712-be43-9feeba184a87",
+  "triggerCount": 0,
+  "tags": []
+}

@@ -1,0 +1,83 @@
+{
+  "createdAt": "2023-12-29T16:20:30.557Z",
+  "updatedAt": "2023-12-29T16:27:21.504Z",
+  "id": "dhLzo5wJYWU13BmF",
+  "name": "TMP Receive Google Sheet data via REST API",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "sheetId": "17fzSFl1BZ1njldTfp5lvh8HtS0-pNXH66b7qGZIiGRU",
+        "range": "Problems!A:D",
+        "options": {}
+      },
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        880,
+        420
+      ],
+      "typeVersion": 1,
+      "id": "6ea7c27f-a7a2-49c4-9901-dd74bd797430"
+    },
+    {
+      "parameters": {
+        "path": "webpagescreenshot",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "4009143c-a673-43b4-969e-2a46ecca178d"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "status",
+              "stringValue": "ok"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3b2ed66f-00a5-4077-9d37-d57cd77da556",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        700,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "3491f8a7-9483-4777-ba87-10039a573732",
+  "triggerCount": 0,
+  "tags": []
+}

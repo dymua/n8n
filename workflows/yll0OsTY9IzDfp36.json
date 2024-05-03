@@ -1,0 +1,179 @@
+{
+  "createdAt": "2023-12-15T14:45:56.682Z",
+  "updatedAt": "2023-12-15T14:45:56.682Z",
+  "id": "yll0OsTY9IzDfp36",
+  "name": "Get only new RSS with photo",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "bfbcdb8c-021e-42fc-92b1-170f899fabda"
+    },
+    {
+      "parameters": {
+        "url": "http://www.theverge.com/rss/full.xml",
+        "options": {}
+      },
+      "name": "RSS Feed Read",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        550,
+        240
+      ],
+      "executeOnce": true,
+      "typeVersion": 1,
+      "id": "98079145-8eac-4cde-b441-da8754727b38"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=content",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "image",
+              "cssSelector": "img",
+              "returnValue": "attribute",
+              "attribute": "src"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Extract Image1",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        1070,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "1c306c70-cbc6-4139-96ca-756235c1b1ef"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Title",
+              "value": "={{$node[\"RSS Feed Read\"].json[\"title\"]}}"
+            },
+            {
+              "name": "Subtitle",
+              "value": "={{$json[\"contentSnippet\"]}}"
+            },
+            {
+              "name": "Author",
+              "value": "={{$json[\"creator\"]}}"
+            },
+            {
+              "name": "URL",
+              "value": "={{$node[\"RSS Feed Read\"].json[\"link\"]}}"
+            },
+            {
+              "name": "Date",
+              "value": "={{$node[\"RSS Feed Read\"].json[\"pubDate\"]}}"
+            },
+            {
+              "name": "content",
+              "value": "={{$json[\"content\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Filter RSS Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        720,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "65361c74-1055-4294-b453-3d417452149e"
+    },
+    {
+      "parameters": {
+        "functionCode": "const staticData = getWorkflowStaticData('global');\nconst newRSSIds = items.map(item => item.json[\"Date\"]);\nconst oldRSSIds = staticData.oldRSSIds; \n\nif (!oldRSSIds) {\n  staticData.oldRSSIds = newRSSIds;\n  return items;\n}\n\n\nconst actualNewRSSIds = newRSSIds.filter((id) => !oldRSSIds.includes(id));\nconst actualNewRSS = items.filter((data) => actualNewRSSIds.includes(data.json['Date']));\nstaticData.oldRSSIds = [...actualNewRSSIds, ...oldRSSIds];\n\nreturn actualNewRSS;\n"
+      },
+      "name": "Only get new RSS1",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        890,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "a2cbccf4-d7a5-4188-b480-7c78f55a1139"
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Read": {
+      "main": [
+        [
+          {
+            "node": "Filter RSS Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter RSS Data": {
+      "main": [
+        [
+          {
+            "node": "Only get new RSS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only get new RSS1": {
+      "main": [
+        [
+          {
+            "node": "Extract Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "45bb2f01-9339-4427-b7ef-8e30c9bd203f",
+  "triggerCount": 0,
+  "tags": []
+}

@@ -1,0 +1,105 @@
+{
+  "createdAt": "2024-01-02T13:34:14.224Z",
+  "updatedAt": "2024-01-02T13:41:15.254Z",
+  "id": "uQmgaSSDcQHG8KZ1",
+  "name": "TMP example of basic LLM Chain connected to an open-source model",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c1ac3e40-8c5f-4412-a766-c8f39f9307bb",
+      "name": "On new manual Chat Message",
+      "type": "@n8n/n8n-nodes-langchain.manualChatTrigger",
+      "position": [
+        740,
+        800
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "prompt": "=You are a helpful assistant. Please reply politely to the users.\nUse emojis and a text.\nQ: {{ $json.input }}\nA: "
+      },
+      "id": "3fd8c189-2848-4cda-ab8b-809b74c0ceae",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        960,
+        800
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.1",
+        "options": {
+          "frequencyPenalty": 2,
+          "maxTokens": 512,
+          "temperature": 0.8
+        }
+      },
+      "id": "f1e91491-11fa-490b-be0f-28f00e51ad74",
+      "name": "Hugging Face Inference Model",
+      "type": "@n8n/n8n-nodes-langchain.lmOpenHuggingFaceInference",
+      "position": [
+        980,
+        1000
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "SkW6D4T76xaL9AeA",
+          "name": "HuggingFaceApi account affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## This is an example of basic LLM Chain connected to an open-source model\n### The Chain is connected to the Mistral-7B-Instruct-v0.1 model, but you can change this\n\nPlease note the initial prompt that guides the model:\n```\nYou are a helpful assistant.\nPlease reply politely to the users.\nUse emojis and a text.\nQ: {{ $json.input }}\nA: \n```\n\nThis way the model \"knows\" that it needs to answer the question right after the `A: `.\n\nSince Hugging Face node is this is an inference mode, it does not support LangChain Agents at the moment. Please use [Ollama Chat Model](https://docs.n8n.io/integrations/builtin/cluster-nodes/sub-nodes/n8n-nodes-langchain.lmchatollama/) node for that",
+        "height": 317,
+        "width": 1083
+      },
+      "id": "5ce3d238-ebac-4333-82d9-a8c670b9367e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        460,
+        460
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "On new manual Chat Message": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hugging Face Inference Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "c73a0629-5634-4ad4-b485-aa610e0f6e20",
+  "triggerCount": 0,
+  "tags": []
+}

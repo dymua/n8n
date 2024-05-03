@@ -1,0 +1,164 @@
+{
+  "createdAt": "2024-01-08T07:43:49.841Z",
+  "updatedAt": "2024-01-08T09:51:36.583Z",
+  "id": "Q8rxhR4l6ml4Wp2m",
+  "name": "REST / Article Extraction",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "path": "article_extraction",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "10e858f3-ce79-4682-b582-d0b1106a3ef6",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        580,
+        320
+      ],
+      "webhookId": "8baa53db-2655-4e2c-be86-065564093e76",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "eaNmsdLoOnS0I55o",
+          "name": "n8n.empai.store - empai"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.articlextractor.com/v1/extract",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "include_html",
+              "value": "false"
+            },
+            {
+              "name": "language",
+              "value": "false"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.query.url }}"
+            },
+            {
+              "name": "api_token",
+              "value": "VIWVYxWUn8eGbeCGFosltZYPXyp92okEGIHJO5kG"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "750f6e8d-cf09-4c56-b8d2-4ad4edec3354",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        800,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "title",
+              "stringValue": "={{ $json.data.title }}"
+            },
+            {
+              "name": "link",
+              "stringValue": "={{ $json.data.url }}"
+            },
+            {
+              "name": "description",
+              "stringValue": "={{ $json.data.text }}"
+            },
+            {
+              "name": "image",
+              "stringValue": "={{ $json.data.top_image }}"
+            },
+            {
+              "name": "category",
+              "stringValue": "={{ $json.data.meta_keywords[0] }}"
+            }
+          ]
+        },
+        "include": "none",
+        "options": {}
+      },
+      "id": "cc1c09c7-4574-4913-8f7c-035df4992c20",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        1020,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json}}",
+        "options": {}
+      },
+      "id": "7dc85ada-0c1a-4684-89f8-bbb18ae01c23",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        320
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "7f261c55-55ef-4421-b1bb-6c5f7ed80684",
+  "triggerCount": 1,
+  "tags": []
+}

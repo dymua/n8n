@@ -1,0 +1,512 @@
+{
+  "createdAt": "2023-12-20T13:25:48.361Z",
+  "updatedAt": "2024-04-27T08:30:44.780Z",
+  "id": "UUOyNkmgneZgA1V5",
+  "name": "🌎 PUBLISH  TG @UACyberSec - UA",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 27,
+        "unit": "minutes"
+      },
+      "id": "dd00f5e3-79e7-4ae0-b490-ad0a088087ec",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        -560
+      ],
+      "webhookId": "8835501b-155b-4856-aec0-b3a21a4efd13"
+    },
+    {
+      "parameters": {
+        "chatId": "-1001717290208",
+        "text": "=<a href=\"{{ $('POST').item.json.link }}\" >{{  $('POST').item.json.title }} </a>\n\n{{$('POST').item.json.content }}\n\n#CyberSecurity #Кібербезпека 🛡️ <a href=\"https://t.me/UACyberSec\">CyberSecurity UA</a>",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": true,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "c670019e-e6bb-4372-88d6-64eeb8c2a57d",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1160,
+        -840
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "65aa6b41-33de-48a3-a782-f8d0364a47a7",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        340,
+        -820
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ Object.keys($json).length}}\n\n\n\n\n",
+              "operation": "smallerEqual"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "95590101-9735-4ac8-8c77-7f2e3b6cc3e1",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        840,
+        -800
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11JwIy-K16K5fqbA_MervHVhItWaZniA1U6slTTW5ZJo",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - @UACyberSec - CyberSecurity UA",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11JwIy-K16K5fqbA_MervHVhItWaZniA1U6slTTW5ZJo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "url",
+              "lookupValue": "={{ $json.link }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "7ff6237c-1ac7-434d-8327-5433540aebb1",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        -800
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "11JwIy-K16K5fqbA_MervHVhItWaZniA1U6slTTW5ZJo",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - @UACyberSec - CyberSecurity UA",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11JwIy-K16K5fqbA_MervHVhItWaZniA1U6slTTW5ZJo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11JwIy-K16K5fqbA_MervHVhItWaZniA1U6slTTW5ZJo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $('POST').item.json.link }}",
+            "date": "={{ Date.now() }}",
+            "link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}\n"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "08247e37-b150-4f8f-b8b1-7b3370e0620f",
+      "name": "Google Sheets3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        -820
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "d0832e39-aeb3-4ab7-9b3b-e465077ed364",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -1040
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 11,
+              "minute": 23
+            }
+          ]
+        },
+        "feedUrl": "https://itc.ua/ua/tag/kiberbezpeka-ua/feed/"
+      },
+      "id": "d1bb51c8-3c7e-4509-8552-e56dfd9786ab",
+      "name": "RSS Feed Trigger",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "limit",
+        "maxItems": 2
+      },
+      "id": "a6ada615-5c68-4c6c-9c79-385ee78620a3",
+      "name": "POST",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        100,
+        -820
+      ]
+    }
+  ],
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    },
+    "global": {
+      "oldRSSIds": [
+        "Wed, 10 Jan 2024 10:11:25 +0000",
+        "Wed, 10 Jan 2024 08:23:14 +0000",
+        "Tue, 09 Jan 2024 12:32:22 +0000",
+        "Tue, 09 Jan 2024 11:48:20 +0000",
+        "Tue, 09 Jan 2024 11:14:10 +0000",
+        "Tue, 09 Jan 2024 10:12:35 +0000",
+        "Tue, 09 Jan 2024 09:05:32 +0000",
+        "Tue, 09 Jan 2024 08:55:36 +0000",
+        "Tue, 09 Jan 2024 06:36:44 +0000",
+        "Tue, 09 Jan 2024 06:32:16 +0000",
+        "Tue, 09 Jan 2024 06:12:59 +0000",
+        "Tue, 09 Jan 2024 05:48:45 +0000",
+        "Mon, 08 Jan 2024 11:53:42 +0000",
+        "Mon, 08 Jan 2024 11:02:58 +0000",
+        "Mon, 08 Jan 2024 09:14:09 +0000",
+        "Mon, 08 Jan 2024 08:12:07 +0000",
+        "Mon, 08 Jan 2024 06:44:35 +0000",
+        "Mon, 08 Jan 2024 06:29:47 +0000",
+        "Mon, 08 Jan 2024 05:38:44 +0000",
+        "Sun, 07 Jan 2024 12:38:11 +0000",
+        "Sun, 07 Jan 2024 10:41:17 +0000",
+        "Sun, 07 Jan 2024 07:09:20 +0000",
+        "Sun, 07 Jan 2024 07:01:46 +0000",
+        "Sat, 06 Jan 2024 08:47:15 +0000",
+        "Sat, 06 Jan 2024 08:32:51 +0000",
+        "Fri, 05 Jan 2024 11:53:57 +0000",
+        "Fri, 05 Jan 2024 11:17:28 +0000",
+        "Fri, 05 Jan 2024 08:36:09 +0000",
+        "Fri, 05 Jan 2024 08:11:50 +0000",
+        "Fri, 05 Jan 2024 07:03:41 +0000",
+        "Fri, 05 Jan 2024 06:36:50 +0000",
+        "Fri, 05 Jan 2024 06:20:04 +0000",
+        "Fri, 05 Jan 2024 05:40:56 +0000",
+        "Thu, 04 Jan 2024 12:25:49 +0000",
+        "Thu, 04 Jan 2024 11:19:26 +0000",
+        "Thu, 04 Jan 2024 11:10:42 +0000",
+        "Thu, 04 Jan 2024 09:27:20 +0000",
+        "Thu, 04 Jan 2024 07:47:21 +0000",
+        "Thu, 04 Jan 2024 07:02:23 +0000",
+        "Thu, 04 Jan 2024 06:33:42 +0000",
+        "Thu, 04 Jan 2024 05:56:30 +0000",
+        "Wed, 03 Jan 2024 13:07:04 +0000",
+        "Wed, 03 Jan 2024 13:03:40 +0000",
+        "Wed, 03 Jan 2024 11:15:08 +0000",
+        "Wed, 03 Jan 2024 11:10:29 +0000",
+        "Wed, 03 Jan 2024 08:49:16 +0000",
+        "Wed, 03 Jan 2024 06:45:17 +0000",
+        "Wed, 03 Jan 2024 06:41:52 +0000",
+        "Tue, 02 Jan 2024 10:40:41 +0000",
+        "Tue, 02 Jan 2024 10:29:42 +0000",
+        "Tue, 02 Jan 2024 08:23:47 +0000",
+        "Tue, 02 Jan 2024 08:16:37 +0000",
+        "Tue, 02 Jan 2024 07:21:41 +0000",
+        "Tue, 02 Jan 2024 06:45:51 +0000",
+        "Tue, 02 Jan 2024 06:11:21 +0000",
+        "Tue, 02 Jan 2024 04:51:25 +0000",
+        "Mon, 01 Jan 2024 18:47:15 +0000",
+        "Mon, 01 Jan 2024 09:22:52 +0000",
+        "Mon, 01 Jan 2024 09:14:43 +0000",
+        "Sun, 31 Dec 2023 06:55:50 +0000",
+        "Sun, 31 Dec 2023 05:56:35 +0000",
+        "Sat, 30 Dec 2023 10:28:43 +0000",
+        "Sat, 30 Dec 2023 06:25:53 +0000",
+        "Fri, 29 Dec 2023 11:50:54 +0000",
+        "Fri, 29 Dec 2023 10:31:13 +0000",
+        "Fri, 29 Dec 2023 09:28:01 +0000",
+        "Fri, 29 Dec 2023 08:26:51 +0000",
+        "Fri, 29 Dec 2023 07:46:19 +0000",
+        "Fri, 29 Dec 2023 06:22:49 +0000",
+        "Fri, 29 Dec 2023 06:08:14 +0000",
+        "Thu, 28 Dec 2023 10:29:51 +0000",
+        "Thu, 28 Dec 2023 08:05:11 +0000",
+        "Thu, 28 Dec 2023 08:02:20 +0000",
+        "Thu, 28 Dec 2023 06:45:37 +0000",
+        "Thu, 28 Dec 2023 06:26:44 +0000",
+        "Thu, 28 Dec 2023 05:08:16 +0000",
+        "Wed, 27 Dec 2023 14:04:48 +0000",
+        "Wed, 27 Dec 2023 12:53:58 +0000",
+        "Wed, 27 Dec 2023 12:10:26 +0000",
+        "Wed, 27 Dec 2023 11:37:53 +0000",
+        "Wed, 27 Dec 2023 10:01:36 +0000",
+        "Wed, 27 Dec 2023 08:04:44 +0000",
+        "Wed, 27 Dec 2023 06:26:31 +0000",
+        "Tue, 26 Dec 2023 08:19:52 +0000",
+        "Tue, 26 Dec 2023 06:24:01 +0000",
+        "Mon, 25 Dec 2023 18:30:58 +0000",
+        "Mon, 25 Dec 2023 15:30:27 +0000",
+        "Mon, 25 Dec 2023 12:30:22 +0000",
+        "Sun, 24 Dec 2023 18:30:01 +0000",
+        "Mon, 25 Dec 2023 13:17:00 +0530",
+        "Thu, 21 Dec 2023 00:00:00 -0500",
+        "Sun, 24 Dec 2023 11:18:00 +0530",
+        "Fri, 22 Dec 2023 08:00:00 -0500",
+        "Fri, 22 Dec 2023 22:17:00 +0530",
+        "Fri, 22 Dec 2023 18:49:00 +0530",
+        "Thu, 21 Dec 2023 12:26:42 -0500",
+        "Fri, 22 Dec 2023 18:16:00 +0530",
+        "Fri, 22 Dec 2023 13:16:00 +0530",
+        "Fri, 22 Dec 2023 11:04:00 +0530",
+        "Thu, 21 Dec 2023 22:18:00 +0530",
+        "Thu, 21 Dec 2023 18:08:00 +0530",
+        "Thu, 21 Dec 2023 16:23:00 +0530",
+        "Thu, 21 Dec 2023 15:33:00 +0530",
+        "Thu, 21 Dec 2023 12:52:00 +0530",
+        "Thu, 21 Dec 2023 09:11:00 +0530",
+        "Wed, 20 Dec 2023 19:02:00 +0530"
+      ]
+    },
+    "node:RSS Feed Trigger 1": {
+      "lastTimeChecked": "2024-01-12T16:21:43Z"
+    },
+    "node:RSS Feed Trigger": {
+      "lastTimeChecked": "2024-04-27T08:30:44Z"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "e82d168a-882f-4ec0-908f-81d5c06cfb8f",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2024-01-12T14:40:58.106Z",
+      "updatedAt": "2024-01-12T14:40:58.106Z",
+      "id": "OPCEAoxpjAP3twTI",
+      "name": "UACyberSec"
+    },
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-15T16:47:29.732Z",
+      "updatedAt": "2023-12-15T16:47:29.732Z",
+      "id": "ioGKSviA9beOvB8G",
+      "name": "news"
+    }
+  ]
+}

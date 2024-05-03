@@ -1,0 +1,863 @@
+{
+  "createdAt": "2024-01-26T08:19:21.067Z",
+  "updatedAt": "2024-05-03T06:11:23.407Z",
+  "id": "2ix1ww7buTdPKluu",
+  "name": "🌎 PUBLISH RSS --> TG @CyberSec911 - UA",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 13,
+        "unit": "minutes"
+      },
+      "id": "473bedd2-421b-4f80-b28b-4ad8b9e2d2ca",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        -200
+      ],
+      "webhookId": "31e1ce3a-04cb-4fcf-af89-4d6c3694a44e"
+    },
+    {
+      "parameters": {
+        "text": "=<b><a href=\"{{$json.linkGoogleTranslate }}\">{{ $json.title }}</></b>\n{{ $json.description.slice(0, 1000) }}",
+        "translateTo": "UK",
+        "additionalFields": {
+          "sourceLang": "EN-US",
+          "splitSentences": "1",
+          "preserveFormatting": "1",
+          "formality": "default"
+        }
+      },
+      "id": "0d792861-8265-4693-b943-b3b334bc40a0",
+      "name": "DeepL",
+      "type": "n8n-nodes-base.deepL",
+      "typeVersion": 1,
+      "position": [
+        780,
+        400
+      ],
+      "credentials": {
+        "deepLApi": {
+          "id": "r9sxheuoE5jGNrZp",
+          "name": "DeepL affprn@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "linkGoogleTranslate",
+              "stringValue": "={{$('RSS').item.json.link .replace($('RSS').item.json.link .extractDomain(),$('RSS').item.json.link .extractDomain().replace(\"-\", \"--\").replace(\".\", \"-\")+'.translate.goog')}}?_x_tr_sl=en&_x_tr_tl=uk&_x_tr_hl=uk&_x_tr_pto=wapp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7659533f-5358-4577-a033-b0a9d52cb92e",
+      "name": "GT Link",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        620,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "86962fb0-391a-4eb8-9746-814dcc61cf79",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        -40,
+        -420
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "operation": "limit",
+        "maxItems": 10
+      },
+      "id": "9bb73563-44a5-4b62-bd27-6616d2fb2816",
+      "name": "FEED",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3.1,
+      "position": [
+        -600,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ Object.keys($json).length}}\n\n\n\n\n",
+              "operation": "smallerEqual"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "f1711862-40c0-4b9e-9b22-0813dac8f8f4",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        360,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - Cyber Security-КіберБезпека",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "url",
+              "lookupValue": "={{ $json.link }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          },
+          "returnAllMatches": "returnFirstMatch"
+        }
+      },
+      "id": "adab668e-93b4-40af-9071-2e70c65a7137",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        -400
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE",
+          "mode": "list",
+          "cachedResultName": "Publish TG Post - Cyber Security-КіберБезпека",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "published_url",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ar8yR33owZDrDm9dhFO8_hV6eb4JwmLSsjcAvwk0gwE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $('RSS').item.json.link }}",
+            "date": "={{ Date.now() }}",
+            "link": "=https://t.me/{{ $json.result.sender_chat.username }}/{{ $json.result.message_id }}"
+          },
+          "matchingColumns": [
+            "url"
+          ],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "displayName": "link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "RAW",
+          "useAppend": false
+        }
+      },
+      "id": "7fe6dec5-648f-498f-929d-a4c6bdfb42a9",
+      "name": "Google Sheets3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [
+        1240,
+        -440
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9jUJUskNggToilib",
+          "name": "Google Sheets affprn@gmail.com"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "={{ $('FEED').item.json.title }}"
+            },
+            {
+              "name": "link",
+              "value": "={{ $('FEED').item.json.link }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('FEED').item.json.contentSnippet.replace(\"\\n\\n(Feed generated with FetchRSS)\",\"\") }}"
+            },
+            {
+              "name": "image",
+              "value": "={{ $json.image }}"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "name": "RSS",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -340,
+        -360
+      ],
+      "typeVersion": 1,
+      "id": "b255df00-bde6-4684-9338-52a6fc8af7f8"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 9,
+              "minute": 11
+            }
+          ]
+        },
+        "feedUrl": "http://fetchrss.com/rss/659ecef21ff4290a87461192659edb67c46192335e748462.xml"
+      },
+      "id": "e4b69dc3-81ed-4e5a-8824-cbe2f00aaceb",
+      "name": "RSS Feed Trigger3",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        -620
+      ]
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "content",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "image",
+              "cssSelector": "img",
+              "returnValue": "=attribute",
+              "attribute": "src"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "name": "HTML Extract",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        -520,
+        -360
+      ],
+      "notesInFlow": true,
+      "typeVersion": 1,
+      "id": "fb825bfd-c68f-4370-aefd-a4d2871f69a2",
+      "notes": "extract news data"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "TEXT",
+              "value": "=<a href=\"{{ $('RSS').item.json.link }}\">{{ $('RSS').item.json.title }}</a>\n{{ $('RSS').item.json.description.replace(\"(Feed generated with FetchRSS)\", \"\") }}"
+            },
+            {
+              "name": "LINK",
+              "value": "={{ $('RSS').item.json.link }}"
+            },
+            {
+              "name": "IMAGE",
+              "value": "={{ $('RSS').item.json.image }}"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "name": "POST",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        560,
+        -420
+      ],
+      "typeVersion": 1,
+      "id": "ba75a0bf-a73b-4719-8262-4f826c1118da"
+    },
+    {
+      "parameters": {},
+      "id": "b5431a1b-820a-46cb-b972-2c1f0fda1abb",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        140,
+        -620
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.IMAGE }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "b82dda9b-494b-48de-9411-f64f41d027c6",
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        760,
+        -420
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002131588974",
+        "text": "={{$json.TEXT }}\n\n#Cyber_Security #КіберБезпека <a href=\"https://t.me/CyberSec911\">Cyber Security | КіберБезпека</a> ",
+        "additionalFields": {
+          "appendAttribution": false,
+          "disable_notification": false,
+          "disable_web_page_preview": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "190f8cce-3cc0-4400-b399-8ca05d4d2298",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        -220
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1002131588974",
+        "file": "={{ $json.IMAGE }}",
+        "additionalFields": {
+          "caption": "={{$json.TEXT }}\n\n#Cyber_Security #КіберБезпека <a href=\"https://t.me/CyberSec911\">Cyber Security | КіберБезпека</a> ",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "a5e6980f-7891-4f74-b2d9-a82feef626fd",
+      "name": "Telegram Photo",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        -440
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "txtHiveHub SMM @txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 10,
+              "minute": 3
+            }
+          ]
+        },
+        "feedUrl": "http://fetchrss.com/rss/659ecef21ff4290a87461192659ee36b3ad17f7c3e18dfc2.xml"
+      },
+      "id": "b95b6e7c-33a3-4451-9679-7b62ee38b3b5",
+      "name": "RSS Feed Trigger5",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 11,
+              "minute": 27
+            }
+          ]
+        },
+        "feedUrl": "http://fetchrss.com/rss/659ecef21ff4290a87461192659ee41311d85a445127e532.xml"
+      },
+      "id": "bf25791d-454f-467a-8ad3-1661fcf22a56",
+      "name": "RSS Feed Trigger6",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 12,
+              "minute": 9
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/659ecef21ff4290a87461192659ee7980661524da72410f2.xml"
+      },
+      "id": "a9ae9c43-0e0c-4378-82fc-38696e587d8c",
+      "name": "RSS Feed Trigger7",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 13,
+              "minute": 11
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/659ecef21ff4290a87461192659eed950661524da72410f3.xml"
+      },
+      "id": "7b16d0e1-951e-4914-908e-005b9b2c5367",
+      "name": "RSS Feed Trigger8",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 17,
+              "minute": 19
+            }
+          ]
+        },
+        "feedUrl": "https://ain.ua/tag/kiberbezpeka/feed/"
+      },
+      "id": "610d859e-6fca-4291-ae34-884e30c45b4a",
+      "name": "RSS Feed Trigger9",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "minute": 41
+            }
+          ]
+        },
+        "feedUrl": "https://fetchrss.com/rss/659f9fef645736655a49040265a01cb5ca0c5c37b61d5fa2.xml"
+      },
+      "id": "4e39fa7a-d890-43b0-bfb9-d63cc5a43794",
+      "name": "RSS Feed Trigger10",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        60
+      ]
+    }
+  ],
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GT Link": {
+      "main": [
+        [
+          {
+            "node": "DeepL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FEED": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger3": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract": {
+      "main": [
+        [
+          {
+            "node": "RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "Telegram Photo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Photo": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger5": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger6": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger7": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger8": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger10": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger9": {
+      "main": [
+        [
+          {
+            "node": "FEED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:RSS Feed Trigger": {
+      "lastTimeChecked": "2024-01-25T18:04:48Z"
+    },
+    "node:RSS Feed Trigger1": {
+      "lastTimeChecked": "2024-01-25T18:00:37Z"
+    },
+    "node:RSS Feed Trigger2": {},
+    "node:RSS Feed Trigger3": {
+      "lastTimeChecked": "2024-05-03T06:11:23Z"
+    },
+    "node:RSS Feed Trigger5": {
+      "lastTimeChecked": "2024-05-02T07:03:59Z"
+    },
+    "node:RSS Feed Trigger6": {
+      "lastTimeChecked": "2024-05-02T08:27:13Z"
+    },
+    "node:RSS Feed Trigger7": {
+      "lastTimeChecked": "2024-05-02T09:09:27Z"
+    },
+    "node:RSS Feed Trigger8": {
+      "lastTimeChecked": "2024-05-02T10:11:34Z"
+    },
+    "node:RSS Feed Trigger9": {
+      "lastTimeChecked": "2024-05-02T14:19:32Z"
+    },
+    "node:RSS Feed Trigger10": {
+      "lastTimeChecked": "2024-05-02T11:41:31Z"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "c82444e7-06db-4afa-9039-ba61c0810bfc",
+  "triggerCount": 7,
+  "tags": [
+    {
+      "createdAt": "2024-01-10T15:29:10.920Z",
+      "updatedAt": "2024-01-10T15:29:10.920Z",
+      "id": "xWkcJ1kTamdFzSHH",
+      "name": "CyberSec911"
+    }
+  ]
+}

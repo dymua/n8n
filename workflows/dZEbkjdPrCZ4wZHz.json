@@ -1,0 +1,148 @@
+{
+  "createdAt": "2023-12-15T16:04:43.499Z",
+  "updatedAt": "2023-12-19T17:11:26.126Z",
+  "id": "dZEbkjdPrCZ4wZHz",
+  "name": "RSS -> TG TheHackersNews",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "feedUrl": "https://feeds.feedburner.com/TheHackersNews"
+      },
+      "id": "68ed485b-f273-4ac6-bebf-abda5dbf9374",
+      "name": "RSS Feed Trigger",
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        900,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "-1001752090126",
+        "file": "={{ $('RSS Feed Trigger').item.json.enclosure.url }}",
+        "additionalFields": {
+          "caption": "={{ $json.message.content }}\n\n<a href=\"{{ $('RSS Feed Trigger').item.json[\"link\"] }}\" >детальніше ...</a>\n\n#HackerNews #хакери\n\nIT Безпека \n\n",
+          "disable_notification": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "15a09f0f-49e4-48e9-8570-b0db8887a880",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1360,
+        600
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "ryZyf6CxWwRKg1nM",
+          "name": "@txtHiveHub_Publisher_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "prompt": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "Виступи в ролі перекладач та спеціаліста в ІТ."
+            },
+            {
+              "content": "=Зроби короткий опис статті:{{ $json.link }} у вигляды поста для Telegram. Пиши українською."
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 400,
+          "temperature": 0.5
+        }
+      },
+      "id": "331957b5-22a5-41b9-9202-eb632e40b7c4",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        580
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "d7ETb2igT8O28Mxl",
+          "name": "OpenAi affprn@gmail.com"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Kyiv",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "node:RSS Feed Trigger": {
+      "lastTimeChecked": "2023-12-19T16:00:43Z"
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "9200907d-01cc-4c03-9137-8a7e05718d8f",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-15T16:47:22.186Z",
+      "updatedAt": "2023-12-15T16:47:22.186Z",
+      "id": "HGkbsYWO813p7ZUi",
+      "name": "rss"
+    },
+    {
+      "createdAt": "2023-12-15T16:47:26.778Z",
+      "updatedAt": "2023-12-15T16:47:26.778Z",
+      "id": "DZepKhqVkcCmMGpQ",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2023-12-15T16:47:29.732Z",
+      "updatedAt": "2023-12-15T16:47:29.732Z",
+      "id": "ioGKSviA9beOvB8G",
+      "name": "news"
+    }
+  ]
+}

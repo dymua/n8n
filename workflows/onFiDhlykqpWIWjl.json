@@ -1,0 +1,448 @@
+{
+  "createdAt": "2023-12-26T19:07:02.487Z",
+  "updatedAt": "2024-04-26T09:08:06.192Z",
+  "id": "onFiDhlykqpWIWjl",
+  "name": "N8N Backup workflows to GitHub",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "dymua",
+          "mode": ""
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": ""
+        },
+        "filePath": "={{$json[\"data\"][\"name\"]}}.json",
+        "fileContent": "={{JSON.stringify($json[\"data\"])}}",
+        "commitMessage": "=[N8N Backup] {{$json.data[\"name\"]}} ({{new Date(Date.now()).toLocaleDateString()}})"
+      },
+      "name": "GitHub Edit",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1580,
+        540
+      ],
+      "typeVersion": 1,
+      "id": "797ee1f8-605f-4b64-b507-9b6b2b920698",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "dymua",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://github.com/dymua/n8n"
+        },
+        "filePath": "/",
+        "asBinaryProperty": false,
+        "additionalParameters": {
+          "reference": "main"
+        }
+      },
+      "name": "Get Files",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        600,
+        440
+      ],
+      "executeOnce": true,
+      "typeVersion": 1,
+      "alwaysOutputData": false,
+      "id": "d1c8501e-727c-4be2-956d-8a0b5f3aef06",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return items[0].json.map(item => {\n  return {\n    json: item\n  }\n});\n"
+      },
+      "name": "Transform",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        800,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "9af639e8-cad4-4494-bf97-6c5bb192bac5"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "dymua",
+          "mode": ""
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": ""
+        },
+        "filePath": "={{$json[\"data\"][\"name\"]}}.json",
+        "fileContent": "={{JSON.stringify($node['Merge'].json[\"data\"])}}",
+        "commitMessage": "=[N8N Backup] {{$json.data[\"name\"]}}.json ({{new Date(Date.now()).toLocaleDateString()}})"
+      },
+      "name": "Create file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1640,
+        220
+      ],
+      "typeVersion": 1,
+      "id": "fd8c5995-95fb-46de-83a5-0651637b7eb7",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "JBjPfnhnDzMtjezk",
+          "name": "GitHub account APP n8n_empaI_store"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "data.name",
+        "propertyName2": "data.name"
+      },
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1330,
+        220
+      ],
+      "typeVersion": 1,
+      "id": "9d46feb7-7cd6-43bb-9e18-77c2aa445b56"
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "https://n8n.empai.store/api/v1/workflows",
+        "options": {}
+      },
+      "name": "Get workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        600,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "2b12f13c-9593-454b-9de5-99a0173ec268",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "lvGf6vqz1EnFzz6o",
+          "name": "N8N API n8n.empai.store/api/v1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "=https://n8n.empai.store/api/v1/workflows/{{$json[\"id\"]}}",
+        "options": {}
+      },
+      "name": "Get workflow data",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1000,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "e5e9d36d-ecab-443e-9755-4621dd154059",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "lvGf6vqz1EnFzz6o",
+          "name": "N8N API n8n.empai.store/api/v1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "={{$json[\"download_url\"]}}",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "Download Raw Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1000,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "49836286-537a-45e5-b5d0-32f2a37dd23e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "lvGf6vqz1EnFzz6o",
+          "name": "N8N API n8n.empai.store/api/v1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const newItems = [];\nfor (item of items[0].json.data) {\n  newItems.push({json: item});\n}\nreturn newItems;"
+      },
+      "name": "transform",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        790,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "f4d86b76-42e4-4707-b20d-6ea4db7ac7a3"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 23,
+              "minute": 59
+            }
+          ]
+        }
+      },
+      "name": "Daily at 23:59",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "bba196eb-f88d-4105-a6a7-2c763b222082"
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "data.updatedAt",
+        "propertyName2": "data.updatedAt"
+      },
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1370,
+        550
+      ],
+      "typeVersion": 1,
+      "id": "448110da-efea-4100-b585-efd1801b3234"
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "http://localhost:5678/rest/workflows",
+        "options": {}
+      },
+      "name": "Get workflows1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        600,
+        40
+      ],
+      "typeVersion": 1,
+      "id": "15935dd4-ffe4-42ae-8fef-3488da120a5c",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "eaNmsdLoOnS0I55o",
+          "name": "n8n.empai.store - empai"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "5920a802-dd69-415f-8a12-83483737cebf",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        380,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "url": "={{$json[\"download_url\"]}}",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "Download Raw Content1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1000,
+        660
+      ],
+      "typeVersion": 1,
+      "id": "49c35b91-02fc-46d2-a76f-7dc7e18a5441"
+    }
+  ],
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Create file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Files": {
+      "main": [
+        [
+          {
+            "node": "Transform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform": {
+      "main": [
+        [
+          {
+            "node": "Download Raw Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "transform": {
+      "main": [
+        [
+          {
+            "node": "Get workflow data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get workflows": {
+      "main": [
+        [
+          {
+            "node": "transform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily at 23:59": {
+      "main": [
+        [
+          {
+            "node": "Get workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get workflow data": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Raw Content": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "11ad2d1b-c67f-4e35-921c-8f17af7f509a",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-26T19:07:09.192Z",
+      "updatedAt": "2023-12-26T19:07:09.192Z",
+      "id": "qSOBUUvSLeCqeHC1",
+      "name": "n8n"
+    },
+    {
+      "createdAt": "2023-12-26T19:07:15.630Z",
+      "updatedAt": "2023-12-26T19:07:15.630Z",
+      "id": "0dwVMAOKC4TpR24P",
+      "name": "system"
+    },
+    {
+      "createdAt": "2023-12-26T19:07:21.391Z",
+      "updatedAt": "2023-12-26T19:07:21.391Z",
+      "id": "fRDRPygkmcfC176U",
+      "name": "git"
+    }
+  ]
+}
