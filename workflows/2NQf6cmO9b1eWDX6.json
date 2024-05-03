@@ -1,6 +1,6 @@
 {
   "createdAt": "2024-05-02T07:12:35.407Z",
-  "updatedAt": "2024-05-03T06:47:20.363Z",
+  "updatedAt": "2024-05-03T06:50:44.336Z",
   "id": "2NQf6cmO9b1eWDX6",
   "name": "Git backup of workflows and credentials",
   "active": false,
@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "command": "=cd /tmp/repo/n8n\ngit -C /tmp/repo/n8n commit -m \"Auto backup ({{ new Date().toISOString() }})\""
+        "command": "=cd /tmp/repo\ngit -C n8n commit -m \"Auto backup ({{ new Date().toISOString() }})\""
       },
       "name": "git commit",
       "type": "n8n-nodes-base.executeCommand",
@@ -224,7 +224,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "eaa43ce3-2f60-49bc-86ec-6ced30551e66",
+  "versionId": "fed3c782-8114-4fb9-b488-96f3dd6a16bd",
   "triggerCount": 0,
   "tags": []
 }
