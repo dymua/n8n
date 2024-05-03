@@ -1,6 +1,6 @@
 {
   "createdAt": "2024-05-02T07:12:35.407Z",
-  "updatedAt": "2024-05-03T06:50:44.336Z",
+  "updatedAt": "2024-05-03T07:22:23.677Z",
   "id": "2NQf6cmO9b1eWDX6",
   "name": "Git backup of workflows and credentials",
   "active": false,
@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "command": "=cd /tmp/repo\ngit -C n8n commit -m \"Auto backup ({{ new Date().toISOString() }})\""
+        "command": "=cd /tmp/repo && git -C n8n commit --author=\"dymua <dima.voytyshin@gmail.com>\" -m \"Auto backup ({{ new Date().toISOString() }})\""
       },
       "name": "git commit",
       "type": "n8n-nodes-base.executeCommand",
@@ -224,7 +224,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "fed3c782-8114-4fb9-b488-96f3dd6a16bd",
+  "versionId": "ca56808f-f548-4a33-aa8c-247307f352b8",
   "triggerCount": 0,
   "tags": []
 }
