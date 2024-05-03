@@ -1,6 +1,6 @@
 {
   "createdAt": "2023-12-17T12:11:15.618Z",
-  "updatedAt": "2024-05-03T09:17:00.026Z",
+  "updatedAt": "2024-05-03T11:17:00.036Z",
   "id": "FfJ6NwaIebCj1B01",
   "name": "2 PUBLISH GSheet -> TG lawvolkov",
   "active": true,
@@ -453,7 +453,7 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrencyRules": [
-        12
+        14
       ]
     }
   },

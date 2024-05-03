@@ -1,9 +1,9 @@
 {
   "createdAt": "2024-05-02T07:12:35.407Z",
-  "updatedAt": "2024-05-03T09:58:26.916Z",
+  "updatedAt": "2024-05-03T12:34:52.909Z",
   "id": "2NQf6cmO9b1eWDX6",
-  "name": "Git backup of workflows and credentials",
-  "active": false,
+  "name": "🅾️ SYSTEM - Git backup of workflows and credentials",
+  "active": true,
   "nodes": [
     {
       "parameters": {},
@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "command": "=cd /tmp/repo && git -C n8n commit -m \"Auto backup ({{ new Date().toISOString() }})\""
+        "command": "=cd /tmp/repo && git -C n8n commit --amend -m \"Auto backup ({{ new Date().toISOString() }})\""
       },
       "name": "git commit",
       "type": "n8n-nodes-base.executeCommand",
@@ -71,7 +71,7 @@
     },
     {
       "parameters": {
-        "command": "git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
+        "command": "=cd /tmp/repo && git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
       },
       "name": "git push",
       "type": "n8n-nodes-base.executeCommand",
@@ -89,16 +89,8 @@
         "triggerTimes": {
           "item": [
             {
-              "hour": 0
-            },
-            {
-              "hour": 12
-            },
-            {
-              "hour": 6
-            },
-            {
-              "hour": 18
+              "mode": "everyX",
+              "value": 3
             }
           ]
         }
@@ -128,12 +120,12 @@
     },
     {
       "parameters": {
-        "command": "git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
+        "command": "=git -C /tmp/repo/n8n push https://dymua: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@github.com/dymua/n8n"
       },
       "name": "git push1",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
-        840,
+        1080,
         20
       ],
       "typeVersion": 1,
@@ -214,7 +206,14 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "bb5c9534-dfba-4e7d-9ce7-2821d17785b9",
-  "triggerCount": 0,
-  "tags": []
+  "versionId": "890acd39-4ece-4cf0-97b8-5d6d67b612e8",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2023-12-26T19:07:15.630Z",
+      "updatedAt": "2023-12-26T19:07:15.630Z",
+      "id": "0dwVMAOKC4TpR24P",
+      "name": "system"
+    }
+  ]
 }
