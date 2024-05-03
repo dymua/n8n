@@ -1,6 +1,6 @@
 {
   "createdAt": "2024-05-02T07:12:35.407Z",
-  "updatedAt": "2024-05-03T07:22:23.677Z",
+  "updatedAt": "2024-05-03T07:27:30.458Z",
   "id": "2NQf6cmO9b1eWDX6",
   "name": "Git backup of workflows and credentials",
   "active": false,
@@ -112,30 +112,16 @@
     },
     {
       "parameters": {
-        "command": "cd /tmp/repo\nls -la"
+        "command": "=cd /tmp/repo/n8n\ngit config --global user.email \"dima.voytyshin@gmail.com\"\ngit config --global user.name \"dymua\"\ngit config --list"
       },
-      "name": "Export Workflows1",
+      "name": "set config",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
-        640,
-        160
+        360,
+        20
       ],
       "typeVersion": 1,
       "id": "bea1280c-f3a8-434a-afba-15eb266e037d",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "command": "ls -la"
-      },
-      "name": "Export Workflows2",
-      "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        860,
-        160
-      ],
-      "typeVersion": 1,
-      "id": "3211f7f8-eb84-4667-b793-5a1282a6dc04",
       "alwaysOutputData": true
     }
   ],
@@ -206,15 +192,9 @@
         ]
       ]
     },
-    "Export Workflows1": {
+    "set config": {
       "main": [
-        [
-          {
-            "node": "Export Workflows2",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -224,7 +204,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "ca56808f-f548-4a33-aa8c-247307f352b8",
+  "versionId": "b6a28c05-b49e-4ebe-889d-d4f74da8fd44",
   "triggerCount": 0,
   "tags": []
 }
